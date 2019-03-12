@@ -1,0 +1,5 @@
+{
+    "port": "5005005",
+    "max_init_credits": "100",
+    "min_init_credits": "1"
+}
