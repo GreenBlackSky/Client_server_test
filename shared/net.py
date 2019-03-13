@@ -14,7 +14,7 @@ class NetworkClient:
         """
     pass
 
-    def check_connection():
+    def has_connection():
         pass
 
     def check_account(user_name):
@@ -33,6 +33,12 @@ class NetworkClient:
         pass
 
     def log_out():
+        pass
+
+    def purchase_item(item):
+        pass
+
+    def sell_item(item):
         pass
 
 

@@ -1,21 +1,18 @@
 """Module contains ClientCore class."""
 
-from enum import Enum, auto
+from shared.commands import Command
 
 
-# Works as finite-state machine. Most of methods works exclusively with
-# user via ui, or with server via network handler.
 class ClientCore:
     """Class contains client-side logic.
 
     Implements interaction between user and server.
+    Works as finite-state machine.
+    I know it could have been implemented without states, using direct calls.
+    But that is exaclty what is called spaghetti-code =)
+    Most of methods works exclusively with user via ui,
+    or with server via network handler.
     """
-
-    class _Command(Enum):
-        GET_CREDITS = auto()
-        GET_MY_ITEMS = auto()
-        GET_ALL_ITEMS = auto()
-        LOG_OUT = auto()
 
     class _State(Enum):
         CONNECTING = auto()
@@ -29,18 +26,6 @@ class ClientCore:
         LOGGINIG_OUT = auto()
         DISCONNECTING = auto()
 
-    _states = {
-        ClientCore._State.CONNECTING: self._connect,
-        ClientCore._State.ASKING_NAME: self._ask_name,
-        ClientCore._State.CHECKING_NAME: self._check_user_name,
-        ClientCore._State.CONFIRMING_NAME: self._confirm_user_name,
-        ClientCore._State.LOGGINIG_IN: self._log_in,
-        ClientCore._State.GETTING_COMMAND: self._get_command,
-        ClientCore._State.EXECUTING_COMMAND: self._execute_command,
-        ClientCore._State.RETRIEVING_RESULT: self._retrieve_result,
-        ClientCore._State.LOGGINIG_OUT: self._log_out
-    }
-
     def __init__(self, server, ui):
         """Create new ClientCore object.
 
@@ -51,6 +36,36 @@ class ClientCore:
         self._user_name = None
         self._last_command = None
         self._last_result = None
+
+        self._states = {
+            ClientCore._State.CONNECTING: self._connect,
+            ClientCore._State.ASKING_NAME: self._ask_name,
+            ClientCore._State.CHECKING_NAME: self._check_user_name,
+            ClientCore._State.CONFIRMING_NAME: self._confirm_user_name,
+            ClientCore._State.LOGGINIG_IN: self._log_in,
+            ClientCore._State.GETTING_COMMAND: self._get_command,
+            ClientCore._State.EXECUTING_COMMAND: self._execute_command,
+            ClientCore._State.RETRIEVING_RESULT: self._retrieve_result,
+            ClientCore._State.LOGGINIG_OUT: self._log_out
+        }
+
+        self._command_executors = {
+            Command.GET_CREDITS: self._server.get_credits,
+            Command.GET_MY_ITEMS: self._server.get_my_items,
+            Command.GET_ALL_ITEMS: self._server.get_all_items,
+            Command.PURCHASE_ITEM: lambda:
+                self._server.purchase_item(self._ui.last_item),
+            Command.SELL_ITEM: lambda:
+                self._server.sell_item(self._ui.last_item)
+        }
+
+        self._result_retrievers = {
+            Command.GET_CREDITS: self._ui.show_credits,
+            Command.GET_MY_ITEMS: self._ui.print_list,
+            Command.GET_ALL_ITEMS: self._ui.print_list,
+            Command.PURCHASE_ITEM: self._ui.show_deal_result,
+            Command.SELL_ITEM: self._ui.show_deal_result
+        }
 
     def exec(self):
         """Start exec loop.
@@ -85,7 +100,7 @@ class ClientCore:
 
     def _check_user_name(self):
         # server
-        account_exsits, connected = self._server.check_account(self._user_name)
+        account_exsits, connected = self._server.has_account(self._user_name)
         if not connected:
             self._state = ClientCore._State.CONNECTING
         elif not account_exsits:
@@ -121,27 +136,20 @@ class ClientCore:
 
     def _execute_command(self):
         # server
-        if self._last_command is ClientCore._Command.GET_CREDITS:
-            self._last_result, connected = self._server.get_credits()
-        elif self._last_command is ClientCore._Command.GET_MY_ITEMS:
-            self._last_result, connected = self._server.get_my_items()
-        elif self._last_command is ClientCore._Command.GET_ALL_ITEMS:
-            self._last_result, connected = self._server.get_all_items()
-        self._state = ClientCore._State.RETRIEVING_RESULT
-
-        if self._last_command is ClientCore._Command.LOG_OUT:
+        if self._last_command is Command.LOG_OUT:
             self._state = ClientCore._State.LOGGINIG_OUT
+
+        self._last_result, connected = \
+            self._command_executors[self._last_command]
+
         if not connected:
             self._state = ClientCore._State.CONNECTING
+        else:
+            self._state = ClientCore._State.RETRIEVING_RESULT
 
     def _retrieve_result(self):
         # user
-        if self._last_command is ClientCore._Command.GET_CREDITS:
-            self._ui.show_credits(self._last_result)
-        elif self._last_command is ClientCore._Command.GET_MY_ITEMS:
-            self._ui.show_my_items(self._last_result)
-        elif self._last_command is ClientCore._Command.GET_ALL_ITEMS:
-            self._ui.show_all_items(self._last_result)
+        self._result_retrievers[self._last_command](self._last_result)
         self._state = ClientCore._State.GETTING_COMMAND
 
     def _log_out(self):
