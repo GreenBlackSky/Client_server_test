@@ -17,7 +17,7 @@ class NetworkClient:
     def has_connection():
         pass
 
-    def check_account(user_name):
+    def has_account(user_name):
         pass
 
     def log_in(user_name):

@@ -81,7 +81,7 @@ class ClientCore:
     def _connect(self):
         # both
         self._ui.say_wait_for_connection()
-        if self._server.check_connection():
+        if self._server.has_connection():
             self._ui.say_got_connection()
             if self._user_name:
                 self._state = ClientCore._State.LOGGINIG_IN
