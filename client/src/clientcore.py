@@ -51,6 +51,7 @@ class ClientCore:
         }
 
         self._command_executors = {
+            Command.GET_NAME: self._server.get_name,
             Command.GET_CREDITS: self._server.get_credits,
             Command.GET_MY_ITEMS: self._server.get_my_items,
             Command.GET_ALL_ITEMS: self._server.get_all_items,
@@ -65,7 +66,8 @@ class ClientCore:
             Command.GET_MY_ITEMS: self._ui.print_list,
             Command.GET_ALL_ITEMS: self._ui.print_list,
             Command.PURCHASE_ITEM: self._ui.show_deal_result,
-            Command.SELL_ITEM: self._ui.show_deal_result
+            Command.SELL_ITEM: self._ui.show_deal_result,
+            Command.GET_NAME: self._ui.say_name
         }
 
     def exec(self):
@@ -131,7 +133,7 @@ class ClientCore:
         # user
         self._last_command, running = self._ui.get_command()
         if not running:
-            self._state = ClientCore._State.LOGGINIG_OUT
+            self._state = ClientCore._State.DISCONNECTING
         else:
             self._state = ClientCore._State.EXECUTING_COMMAND
 
@@ -139,14 +141,14 @@ class ClientCore:
         # server
         if self._last_command is Command.LOG_OUT:
             self._state = ClientCore._State.LOGGINIG_OUT
-
-        self._last_result, connected = \
-            self._command_executors[self._last_command]
-
-        if not connected:
-            self._state = ClientCore._State.CONNECTING
         else:
-            self._state = ClientCore._State.RETRIEVING_RESULT
+            self._last_result, connected = \
+                self._command_executors[self._last_command]()
+
+            if not connected:
+                self._state = ClientCore._State.CONNECTING
+            else:
+                self._state = ClientCore._State.RETRIEVING_RESULT
 
     def _retrieve_result(self):
         # user

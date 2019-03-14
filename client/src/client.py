@@ -12,14 +12,13 @@ def run():
     config_must_have = {
         "server_ip": str,
         "server_port": int,
-        "attempts": int,
-        "timeout": int
+        "timeout": float
     }
     config = open_config("client/cfg/client_config.json")
     if config is None or not transform_config(config, config_must_have):
         return
 
-    ClientCore(NetworkClient(config**), TUI()).exec()
+    ClientCore(NetworkClient(**config), TUI()).exec()
 
 
 if __name__ == "__main__":

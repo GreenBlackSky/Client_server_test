@@ -9,6 +9,10 @@ from enum import Enum, auto
 class Command(Enum):
     """Enum, which contains commands."""
 
+    PING = auto()
+    USER_EXISTS = auto()
+    LOG_IN = auto()
+    GET_NAME = auto()
     GET_CREDITS = auto()
     GET_MY_ITEMS = auto()
     GET_ALL_ITEMS = auto()

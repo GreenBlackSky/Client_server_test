@@ -13,19 +13,23 @@ class TUI:
     """
 
     _commands = {
+        "name": Command.GET_NAME,
         "credits": Command.GET_CREDITS,
         "items": Command.GET_MY_ITEMS,
         "market": Command.GET_ALL_ITEMS,
         "buy": Command.PURCHASE_ITEM,
-        "sell": Command.SELL_ITEM
+        "sell": Command.SELL_ITEM,
+        "leave": Command.LOG_OUT
     }
 
     _commands_descriptions = {
+        Command.GET_NAME: "show name of current user",
         Command.GET_CREDITS: "show credits you have",
         Command.GET_MY_ITEMS: "show items you have",
         Command.GET_ALL_ITEMS: "show all aceccible items",
-        Command.PURCHASE_ITEM: "buy item. Usage: buy <item_name>",
-        Command.SELL_ITEM: "sell item. Usage: sell <item_name>"
+        Command.PURCHASE_ITEM: "buy item, usage: buy <item_name>",
+        Command.SELL_ITEM: "sell item, usage: sell <item_name>",
+        Command.LOG_OUT: "log out"
     }
 
     def __init__(self):
@@ -34,10 +38,11 @@ class TUI:
 
     def _get_input(self, prompt):
         while True:
-            user_input = input(prompt)
-            if user_input.lower() == 'q' and self._confirm_exit():
-                return None, False
-            elif user_input.lower() == 'h':
+            user_input = input(prompt + "\n")
+            if user_input == 'quit':
+                if self._confirm_exit():
+                    return None, False
+            elif user_input == 'help':
                 self._help()
             else:
                 return user_input, True
@@ -45,7 +50,7 @@ class TUI:
     def _confirm_exit(self):
         while True:
             user_input = input("Are you sure you want to exit?(y/n)")
-            user_input = user_input.trim().lower()
+            user_input = user_input.strip().lower()
             if user_input in {'q', 'y'}:
                 return True
             if user_input == 'n':
@@ -59,7 +64,7 @@ class TUI:
         In that case, an exception is raised.
         """
         while True:
-            user_input = input(prompt + ("(y/n)")).trim().lower()
+            user_input = input(prompt + ("(y/n)\n")).strip().lower()
             if user_input == 'y':
                 return True
             elif user_input == 'n':
@@ -67,19 +72,24 @@ class TUI:
             elif quitable and user_input == 'q' and self._confirm_exit():
                 raise Exception("Quit")
             else:
-                print("Unexpected input")
+                print("Unexpected input. Print help for help.")
 
     def _help(self):
         print("Tips:")
         for command_name, command in self._commands.items():
             description = self._commands_descriptions[command]
             print("{}\t{}".format(command_name, description))
-        print("h\thelp\nq\tquit")
+        print("help")
+        print("quit")
 
     def greet(self):
         """Print welcome messange."""
         print("Welcome!")
         self._help()
+
+    def say_name(self, name):
+        """Show user his name."""
+        print(name)
 
     def say_wait_for_connection(self):
         """Print message about establishing connection."""
@@ -111,7 +121,7 @@ class TUI:
     def get_command(self):
         """Get command from user."""
         while True:
-            user_input, running = self._get_input("Enter command")
+            user_input, running = self._get_input("Enter command:")
             if not running:
                 return None, False
 
@@ -120,7 +130,7 @@ class TUI:
                 user_input, new_item = user_input.split()
 
             if user_input not in self._commands:
-                print("Unexpected input")
+                print("Unexpected input. Print help for help.")
             else:
                 if new_item:
                     self._last_item = new_item
@@ -137,6 +147,8 @@ class TUI:
 
     def print_list(self, items):
         """Print list of items."""
+        if not items:
+            print("Empty")
         for item in items:
             print(item)
 

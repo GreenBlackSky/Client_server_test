@@ -2,8 +2,11 @@
 
 import sqlite3
 
+from item import Item
+
 
 class DBHandler:
     """Class handles sqlite-based data bases."""
 
-    pass
+    def __init__(self, path):
+        pass
