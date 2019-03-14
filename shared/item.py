@@ -1,6 +1,6 @@
 """Module contains class Item and ItemsDB."""
 
-# import sqlite
+# import sqlite3
 
 
 class Item:

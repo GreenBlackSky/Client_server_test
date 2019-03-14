@@ -1,6 +1,6 @@
 """Module contains ClientCore class."""
 
-from commands import Command
+from netrequest import Request
 from enum import Enum, auto
 
 
@@ -51,23 +51,23 @@ class ClientCore:
         }
 
         self._command_executors = {
-            Command.GET_NAME: self._server.get_name,
-            Command.GET_CREDITS: self._server.get_credits,
-            Command.GET_MY_ITEMS: self._server.get_my_items,
-            Command.GET_ALL_ITEMS: self._server.get_all_items,
-            Command.PURCHASE_ITEM: lambda:
+            Request.Type.GET_NAME: self._server.get_name,
+            Request.Type.GET_CREDITS: self._server.get_credits,
+            Request.Type.GET_MY_ITEMS: self._server.get_my_items,
+            Request.Type.GET_ALL_ITEMS: self._server.get_all_items,
+            Request.Type.PURCHASE_ITEM: lambda:
                 self._server.purchase_item(self._ui.last_item),
-            Command.SELL_ITEM: lambda:
+            Request.Type.SELL_ITEM: lambda:
                 self._server.sell_item(self._ui.last_item)
         }
 
         self._result_retrievers = {
-            Command.GET_CREDITS: self._ui.show_credits,
-            Command.GET_MY_ITEMS: self._ui.print_list,
-            Command.GET_ALL_ITEMS: self._ui.print_list,
-            Command.PURCHASE_ITEM: self._ui.show_deal_result,
-            Command.SELL_ITEM: self._ui.show_deal_result,
-            Command.GET_NAME: self._ui.say_name
+            Request.Type.GET_CREDITS: self._ui.show_credits,
+            Request.Type.GET_MY_ITEMS: self._ui.print_list,
+            Request.Type.GET_ALL_ITEMS: self._ui.print_list,
+            Request.Type.PURCHASE_ITEM: self._ui.show_deal_result,
+            Request.Type.SELL_ITEM: self._ui.show_deal_result,
+            Request.Type.GET_NAME: self._ui.say_name
         }
 
     def exec(self):
@@ -84,7 +84,7 @@ class ClientCore:
     def _connect(self):
         # both
         self._ui.say_wait_for_connection()
-        if self._server.has_connection():
+        if self._server.ping():
             self._ui.say_got_connection()
             if self._user_name:
                 self._state = ClientCore._State.LOGGINIG_IN
@@ -139,7 +139,7 @@ class ClientCore:
 
     def _execute_command(self):
         # server
-        if self._last_command is Command.LOG_OUT:
+        if self._last_command is Request.Type.LOG_OUT:
             self._state = ClientCore._State.LOGGINIG_OUT
         else:
             self._last_result, connected = \
@@ -166,4 +166,5 @@ class ClientCore:
         else:
             self._state = ClientCore._State.GETTING_COMMAND
 
-# TODO make log_in a command
+# TODO Make log_in a command
+# TODO Create requests and process answers here

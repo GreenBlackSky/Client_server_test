@@ -1,6 +1,6 @@
 """Text User Interface."""
 
-from commands import Command
+from netrequest import Request
 
 
 class TUI:
@@ -13,23 +13,23 @@ class TUI:
     """
 
     _commands = {
-        "name": Command.GET_NAME,
-        "credits": Command.GET_CREDITS,
-        "items": Command.GET_MY_ITEMS,
-        "market": Command.GET_ALL_ITEMS,
-        "buy": Command.PURCHASE_ITEM,
-        "sell": Command.SELL_ITEM,
-        "leave": Command.LOG_OUT
+        "name": Request.Type.GET_NAME,
+        "credits": Request.Type.GET_CREDITS,
+        "items": Request.Type.GET_MY_ITEMS,
+        "market": Request.Type.GET_ALL_ITEMS,
+        "buy": Request.Type.PURCHASE_ITEM,
+        "sell": Request.Type.SELL_ITEM,
+        "leave": Request.Type.LOG_OUT
     }
 
     _commands_descriptions = {
-        Command.GET_NAME: "show name of current user",
-        Command.GET_CREDITS: "show credits you have",
-        Command.GET_MY_ITEMS: "show items you have",
-        Command.GET_ALL_ITEMS: "show all aceccible items",
-        Command.PURCHASE_ITEM: "buy item, usage: buy <item_name>",
-        Command.SELL_ITEM: "sell item, usage: sell <item_name>",
-        Command.LOG_OUT: "log out"
+        Request.Type.GET_NAME: "show name of current user",
+        Request.Type.GET_CREDITS: "show credits you have",
+        Request.Type.GET_MY_ITEMS: "show items you have",
+        Request.Type.GET_ALL_ITEMS: "show all aceccible items",
+        Request.Type.PURCHASE_ITEM: "buy item, usage: buy <item_name>",
+        Request.Type.SELL_ITEM: "sell item, usage: sell <item_name>",
+        Request.Type.LOG_OUT: "log out"
     }
 
     def __init__(self):
@@ -180,4 +180,4 @@ class TUI:
         """Print farewell message."""
         print("Thank you for playing!")
 
-# TODO replace Rust-style quit by exceptions
+# TODO Replace Rust-style quit by exceptions

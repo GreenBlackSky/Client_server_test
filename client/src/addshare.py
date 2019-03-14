@@ -1,6 +1,6 @@
-"""Little dirty trick to add shared modules into project.
+"""Little trick to add shared modules into project.
 
-I didn't want to mess with global PATH or install my packeges.
+I don't want to mess with global PATH or install my packeges.
 So this module adds path to shared directory into path of project.
 Both server and client have copy of this module.
 """

@@ -2,7 +2,8 @@
 
 import addshare
 from confighandler import open_config, transform_config
-from dbhandler import UsersDB, ItemsDB
+from item import ItemsDB
+from account import UsersDB
 from netserver import NetworkServer
 from clienthandler import ClientHandler
 
