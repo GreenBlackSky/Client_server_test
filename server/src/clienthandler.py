@@ -1,8 +1,8 @@
 """Module contains ClientHandler class."""
 
 
-class ClientHandler:
-    """Class handles connection with client.
+class ClientHandlerFabric:
+    """Class produces ClientHandlers.
 
     ClientHandler provides client with information and executs queries.
     """

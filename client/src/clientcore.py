@@ -1,6 +1,7 @@
 """Module contains ClientCore class."""
 
-from shared.commands import Command
+from commands import Command
+from enum import Enum, auto
 
 
 class ClientCore:
@@ -75,7 +76,7 @@ class ClientCore:
         """
         self._ui.greet()
         while self._state is not ClientCore._State.DISCONNECTING:
-            states[self._state]()
+            self._states[self._state]()
         self._ui.farewell()
 
     def _connect(self):

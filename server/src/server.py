@@ -1,8 +1,9 @@
 """Server application."""
 
-from shared.confighandler import open_config, transform_config
+import addshare
+from confighandler import open_config, transform_config
 from dbhandler import DBHandler
-from shared.net import NetworkServer
+from netserver import NetworkServer
 from connectionhandler import ConnectionHandler
 from clienthandler import ClientHandlerFabric
 
@@ -28,3 +29,5 @@ def run():
 
 if __name__ == "__main__":
     run()
+
+# TODO handle interraptions

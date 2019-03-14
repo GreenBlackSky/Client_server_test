@@ -1,6 +1,6 @@
 """Text User Interface."""
 
-from shared.commands import Command
+from commands import Command
 
 
 class TUI:
@@ -70,16 +70,16 @@ class TUI:
                 print("Unexpected input")
 
     def _help(self):
+        print("Tips:")
         for command_name, command in self._commands.items():
             description = self._commands_descriptions[command]
             print("{}\t{}".format(command_name, description))
-        print("Tips:\nh\thelp\nq\tquit")
+        print("h\thelp\nq\tquit")
 
     def greet(self):
         """Print welcome messange."""
         print("Welcome!")
         self._help()
-        self.show_credits()
 
     def say_wait_for_connection(self):
         """Print message about establishing connection."""
@@ -111,7 +111,9 @@ class TUI:
     def get_command(self):
         """Get command from user."""
         while True:
-            user_input, running = self._get_input("Enter command").trim()
+            user_input, running = self._get_input("Enter command")
+            if not running:
+                return None, False
 
             new_item = None
             if len(user_input.split()) == 2:

@@ -1,4 +1,4 @@
-"""Module contains network logic."""
+"""Module contains NetworkClient."""
 
 from socket import socket
 
@@ -6,13 +6,22 @@ from socket import socket
 class NetworkClient:
     """NetworkClient handles connection with server on client side."""
 
-    def __init__(self, server_ip, server_port, attempts, timeout):
+    def __init__(self, host, port, attempts, timeout):
         """Initialize client.
 
         On start client will try to connect to given server,
         on given port, for given number of attempts with given timeout(ms).
         """
-    pass
+        self.host, self.port = host, port
+        self.attempts, self.timeout = attempts, timeout
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect()
+
+    def _send_data(self, data):
+        pass
+
+    def _get_data(self):
+        pass
 
     def has_connection():
         pass
@@ -39,12 +48,4 @@ class NetworkClient:
         pass
 
     def sell_item(item):
-        pass
-
-
-class NetworkServer:
-    """NetworkServer handles connection with clients on server side."""
-
-    def __init__(self, port):
-        """Initialize server, listening to given port."""
         pass

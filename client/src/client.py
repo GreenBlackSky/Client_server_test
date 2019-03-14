@@ -1,9 +1,10 @@
 """Client application."""
 
-from shared.confighandler import open_config, transform_config
+import addshare
 from tui import TUI
 from clientcore import ClientCore
-from shared.net import NetworkClient
+from netclient import NetworkClient
+from confighandler import open_config, transform_config
 
 
 def run():

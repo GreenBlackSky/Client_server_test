@@ -16,6 +16,7 @@ Simple net server app. It is used to handle connection with client, provide it w
 * Standart mofule `json` is used to read configuration both for server and for client. 
 * Standart module `socket` is used for communication between server and client.
 * Both databases are implemented as sqlite db, so `sqlite3` is used to handle them.
+* Not a dependancy, but worth mentioning. `server.py` and `client.py` are both meant to be executed from project root. If you want to run any of them from another place, you would want to pass it path to config through argument. Also, a dirty little trick has been used to include shared modules. I didn't want to mess with `PYTHONPATH` or install my packages into system.
 
 ## Components
 #### Client-side
@@ -28,6 +29,7 @@ Simple net server app. It is used to handle connection with client, provide it w
 #### Shared
 * Net class is used to maintain connection between client and server.
 * ConfigHandler is used to open, parse and check configuration.
+* commands module represents... commands! Commands, that user gives to client.
 
 Although, these components are quite naive, they are designed to be replaceble. Query-handling in ClientHandler can be improved by using Celery.
 Sqlite as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.
