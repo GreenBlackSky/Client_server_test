@@ -2,7 +2,7 @@
 
 import addshare
 from confighandler import open_config, transform_config
-from dbhandler import DBHandler
+from dbhandler import UsersDB, ItemsDB
 from netserver import NetworkServer
 from clienthandler import ClientHandler
 
@@ -20,8 +20,8 @@ def run():
     if config is None or not transform_config(config, config_must_have):
         return
 
-    items_db = DBHandler(config["items_db_path"])
-    users_db = DBHandler(config["users_db_path"])
+    users_db = UsersDB(config["users_db_path"])
+    items_db = ItemsDB(config["items_db_path"])
     ClientHandler.set_db(users_db, items_db)
     NetworkServer(config["port"], ClientHandler).exec()
 

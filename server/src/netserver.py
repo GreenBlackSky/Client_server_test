@@ -11,4 +11,5 @@ class NetworkServer(ThreadingMixIn, TCPServer):
         super().__init__(("127.0.0.1", port), client_handler)
 
     def exec(self):
+        """Start an execution loop."""
         self.serve_forever()
