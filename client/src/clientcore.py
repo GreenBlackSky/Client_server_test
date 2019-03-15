@@ -52,26 +52,6 @@ class ClientCore:
             ClientCore._State.LOGGINIG_OUT: self._log_out
         }
 
-        self._command_executors = {
-            Request.Type.GET_NAME: self._server.get_name,
-            Request.Type.GET_CREDITS: self._server.get_credits,
-            Request.Type.GET_MY_ITEMS: self._server.get_my_items,
-            Request.Type.GET_ALL_ITEMS: self._server.get_all_items,
-            Request.Type.PURCHASE_ITEM: lambda:
-                self._server.purchase_item(self._ui.last_item),
-            Request.Type.SELL_ITEM: lambda:
-                self._server.sell_item(self._ui.last_item)
-        }
-
-        self._result_retrievers = {
-            Request.Type.GET_CREDITS: self._ui.show_credits,
-            Request.Type.GET_MY_ITEMS: self._ui.print_list,
-            Request.Type.GET_ALL_ITEMS: self._ui.print_list,
-            Request.Type.PURCHASE_ITEM: self._ui.show_deal_result,
-            Request.Type.SELL_ITEM: self._ui.show_deal_result,
-            Request.Type.GET_NAME: self._ui.say_name
-        }
-
     def exec(self):
         """Start exec loop.
 
@@ -92,7 +72,7 @@ class ClientCore:
         # both
         self._ui.say_wait_for_connection()
         self._server.reconnect()
-        self._server.ping()
+        self._server.execute(Request.Type.PING)
         self._ui.say_got_connection()
         if self._user_name:
             self._state = ClientCore._State.LOGGINIG_IN
@@ -113,7 +93,8 @@ class ClientCore:
 
     def _check_user_name(self):
         # server
-        answer = self._server.has_user(self._user_name)
+        answer = self._server.execute(Request.Type.USER_EXISTS,
+                                      self._user_name)
         if not answer.data:
             self._state = ClientCore._State.CONFIRMING_NAME
         else:
@@ -129,7 +110,7 @@ class ClientCore:
 
     def _log_in(self):
         # server
-        self._server.log_in(self._user_name)
+        self._server.execute(Request.Type.LOG_IN, self._user_name)
         self._state = ClientCore._State.GETTING_COMMAND
 
     def _get_command(self):
@@ -142,19 +123,20 @@ class ClientCore:
         if self._last_command is Request.Type.LOG_OUT:
             self._state = ClientCore._State.LOGGINIG_OUT
         else:
-            self._last_result = self._command_executors[self._last_command]()
+            self._last_result = self._server.execute(self._last_command,
+                                                     self._ui.last_item)
             self._state = ClientCore._State.RETRIEVING_RESULT
 
     def _retrieve_result(self):
         # user
-        self._result_retrievers[self._last_command](self._last_result)
+        self._ui.show_result(self._last_result)
         self._state = ClientCore._State.GETTING_COMMAND
 
     def _log_out(self):
         # both
         confirm = self._ui.confirm_log_out()
         if confirm:
-            self._server.log_out()
+            self._server.execute(Request.Type.LOG_OUT)
             self._state = ClientCore._State.ASKING_NAME
         else:
             self._state = ClientCore._State.GETTING_COMMAND

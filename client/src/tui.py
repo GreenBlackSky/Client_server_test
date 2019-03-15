@@ -32,9 +32,19 @@ class TUI:
         Request.Type.LOG_OUT: "log out"
     }
 
+# Util
+
     def __init__(self):
         """Create TUI instance."""
         self._last_item = None
+        self._result_retrievers = {
+            Request.Type.GET_CREDITS: self._show_credits,
+            Request.Type.GET_MY_ITEMS: self._print_list,
+            Request.Type.GET_ALL_ITEMS: self._print_list,
+            Request.Type.PURCHASE_ITEM: self._show_deal_result,
+            Request.Type.SELL_ITEM: self._show_deal_result,
+            Request.Type.GET_NAME: self._say_name
+        }
 
     def _get_input(self, prompt):
         while True:
@@ -52,7 +62,7 @@ class TUI:
             user_input = input("Are you sure you want to exit?(y/n)")
             user_input = user_input.strip().lower()
             if user_input == 'y':
-                exit()
+                raise SystemExit
             elif user_input == 'n':
                 return
             else:
@@ -79,15 +89,17 @@ class TUI:
         print("help")
         print("quit")
 
-    def greet(self):
-        """Print welcome messange."""
-        print("Welcome!")
-        self._help()
-
     @property
     def last_item(self):
         """Get name of last chosen item."""
         return self._last_item
+
+# Decoration methods (to create mood)
+
+    def greet(self):
+        """Print welcome messange."""
+        print("Welcome!")
+        self._help()
 
     def say_wait_for_connection(self):
         """Print message about establishing connection."""
@@ -96,6 +108,12 @@ class TUI:
     def say_got_connection(self):
         """Inform user about successfully established connection."""
         print("Connected!")
+
+    def farewell(self):
+        """Print farewell message."""
+        print("Thank you for playing!")
+
+# Input methods
 
     def ask_retry_connection(self):
         """Inform user about failed connection and ask retry."""
@@ -127,18 +145,27 @@ class TUI:
                     self._last_item = new_item
                 return self._commands[user_input]
 
-    def say_name(self, result):
+    def confirm_log_out(self):
+        """Ask user if he sure he wants to log out."""
+        return self._confirm_action("Log out?")
+
+# Output methods
+
+    def show_result(self, result):
+        self._result_retrievers[result.request_type](result)
+
+    def _say_name(self, result):
         """Show user his name."""
         if result.success:
             print(result.data)
         else:
             print(result.message)
 
-    def show_credits(self, result):
+    def _show_credits(self, result):
         """Show user number of his credits."""
         print("Your account:", result.data)
 
-    def print_list(self, result):
+    def _print_list(self, result):
         """Print list of items."""
         if not result.success:
             print(result.message)
@@ -148,18 +175,10 @@ class TUI:
             for item in result.data:
                 print(item)
 
-    def show_deal_result(self, result):
+    def _show_deal_result(self, result):
         """Print result of last user operation."""
         if result.success:
             print("Success!")
         else:
             print("Operation Failed.")
         print(result.message)
-
-    def confirm_log_out(self):
-        """Ask user if he sure he wants to log out."""
-        return self._confirm_action("Log out?")
-
-    def farewell(self):
-        """Print farewell message."""
-        print("Thank you for playing!")

@@ -41,54 +41,6 @@ class ServerHandler:
         """
         return loads(self._socket.recv(1024))
 
-# TODO everything below can be done in TWO methods. But is it worth it?
-
-    def ping(self):
-        """Check if client has connection with server."""
-        self._send_request(Request.Type.PING)
-        self._get_responce()
-
-    def log_out(self):
-        """Log out user."""
-        self._send_request(Request.Type.LOG_OUT)
-        self._get_responce()
-
-    def get_name(self):
-        """Request name of current user."""
-        self._send_request(Request.Type.GET_NAME)
-        return self._get_responce()
-
-    def get_credits(self):
-        """Request number of credits user have."""
-        self._send_request(Request.Type.GET_CREDITS)
-        return self._get_responce()
-
-    def get_my_items(self):
-        """Request items user have."""
-        self._send_request(Request.Type.GET_MY_ITEMS)
-        return self._get_responce()
-
-    def get_all_items(self):
-        """Request all acessible items."""
-        self._send_request(Request.Type.GET_ALL_ITEMS)
-        return self._get_responce()
-
-    def log_in(self, user_name):
-        """Log in user."""
-        self._send_request(Request.Type.LOG_IN, user_name)
-        self._get_responce()
-
-    def has_user(self, user_name):
-        """Check if server has an user with given name."""
-        self._send_request(Request.Type.USER_EXISTS, user_name)
-        return self._get_responce()
-
-    def purchase_item(self, item):
-        """Request buying item."""
-        self._send_request(Request.Type.PURCHASE_ITEM, item)
-        return self._get_responce()
-
-    def sell_item(self, item):
-        """Request selling item."""
-        self._send_request(Request.Type.SELL_ITEM, item)
+    def execute(self, request_type, arg=None):
+        self._send_request(request_type, arg)
         return self._get_responce()

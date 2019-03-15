@@ -166,7 +166,7 @@ class ClientHandler(BaseRequestHandler):
         if item in self._user.items:
             self._user.items.remove(item)
             self._user.credits += item.selling_price
-            ret = Answer(request_type, message="Item sold" + item_name)
+            ret = Answer(request_type, message="Item sold: " + item_name)
         else:
             ret = Answer(request_type,
                          success=False,
