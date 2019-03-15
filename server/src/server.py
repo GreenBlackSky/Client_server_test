@@ -24,6 +24,8 @@ def run():
     users_db = UsersDB(config["users_db_path"])
     items_db = ItemsDB(config["items_db_path"])
     ClientHandler.set_db(users_db, items_db)
+    ClientHandler.set_limits(config["min_init_credits"],
+                             config["max_init_credits"])
     NetworkServer(config["port"], ClientHandler).exec()
 
 if __name__ == "__main__":

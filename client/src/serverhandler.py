@@ -143,10 +143,7 @@ class ServerHandler:
             connected = False
         if not connected:
             return None, connected
-        if answer.success:
-            return answer.data, connected
-        else:
-            return answer.message, connected
+        return (answer.data, answer.message), connected
 
     def sell_item(self, item):
         """Request selling item."""
@@ -159,9 +156,6 @@ class ServerHandler:
             connected = False
         if not connected:
             return None, connected
-        if answer.success:
-            return answer.data, connected
-        else:
-            return answer.message, connected
+        return (answer.data, answer.message), connected
 
 # TODO Pass exceptions to upper level

@@ -2,6 +2,7 @@
 
 from socketserver import BaseRequestHandler
 from pickle import dumps, loads
+from random import randint
 from netrequest import Request, Answer
 from item import Item
 from account import Account
@@ -15,6 +16,8 @@ class ClientHandler(BaseRequestHandler):
 
     _items = None
     _users = None
+    _new_credits_max = None
+    _new_credits_min = None
 
     @staticmethod
     def set_db(items_db, users_db):
@@ -34,14 +37,20 @@ class ClientHandler(BaseRequestHandler):
             "shovel": Item("shovel", 160, 80)
         }
 
-    def __init__(self, *args):
+    @staticmethod
+    def set_limits(min_limit, max_limit):
+        """Set limits for income."""
+        ClientHandler._new_credits_max = max_limit
+        ClientHandler._new_credits_min = min_limit
+
+    def setup(self):
         """Create handler.
 
         Overridden to check if data bases are set.
         """
-        if self._items is None or self._users is None:
+        if None in [self._items, self._users,
+                    self._new_credits_min, self._new_credits_max]:
             raise Exception("Try create ClientHandler without databases.")
-        super().__init__(*args)
         self._user = None
 
         # Data to return on request
@@ -70,6 +79,7 @@ class ClientHandler(BaseRequestHandler):
             request = self.request.recv(1024)
             request = loads(request)
             answer = self._process_request(request)
+            answer = dumps(answer)
             self.request.send(answer)
         print("Connection lost:", self.client_address)
         self.request.close()
@@ -90,7 +100,7 @@ class ClientHandler(BaseRequestHandler):
                          message="Not logged in")
         else:
             ret = Answer(request_type,
-                         data=self._get_requset_handlers[request_type])
+                         data=self._get_requset_handlers[request_type]())
         return ret
 
     def _ping(self, _):
@@ -104,7 +114,10 @@ class ClientHandler(BaseRequestHandler):
         if user_name not in self._users:
             # self._users.new_user(user_name)
             self._users[user_name] = Account(user_name)
+
         self._user = self._users[user_name]
+        self._user.credits += randint(self._new_credits_min,
+                                      self._new_credits_max)
         return Answer(Request.Type.LOG_IN)
 
     def _log_out(self, _):
@@ -120,7 +133,7 @@ class ClientHandler(BaseRequestHandler):
 
     def _get_all_items(self, _):
         request_type = Request.Type.GET_ALL_ITEMS
-        return Answer(request_type, data=list(self._items.valies()))
+        return Answer(request_type, data=list(self._items.values()))
 
     def _buy_item(self, item_name):
         request_type = Request.Type.PURCHASE_ITEM
@@ -130,9 +143,9 @@ class ClientHandler(BaseRequestHandler):
                          message="Not logged in")
         else:
             if item_name not in self._items:
-                ret = Answer(request_type,
-                             success=False,
-                             message="Not such item: " + item_name)
+                return Answer(request_type,
+                              success=False,
+                              message="Not such item: " + item_name)
             item = self._items[item_name]
             if item.buying_price <= self._user.credits:
                 self._user.credits -= item.buying_price
@@ -152,14 +165,14 @@ class ClientHandler(BaseRequestHandler):
                          message="Not logged in")
         else:
             if item_name not in self._items:
-                ret = Answer(request_type,
-                             success=False,
-                             message="Not such item: " + item_name)
+                return Answer(request_type,
+                              success=False,
+                              message="Not such item: " + item_name)
             item = self._items[item_name]
             if item in self._user.items:
                 self._user.items.remove(item)
                 self._user.credits += item.selling_price
-                ret = Answer(request_type, Message="Item sold")
+                ret = Answer(request_type, message="Item sold")
             else:
                 ret = Answer(request_type,
                              success=False,
