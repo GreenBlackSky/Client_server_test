@@ -44,6 +44,9 @@ def run():
                              config["max_init_credits"])
     NetworkServer(config["port"], ClientHandler).exec()
 
+#   client_handler = ClientHandler(config["port"])
+#   ServerCore(client_handler, items_db, users_db).exec()
+
 if __name__ == "__main__":
     run()
 

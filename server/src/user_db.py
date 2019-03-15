@@ -33,3 +33,10 @@ class UsersDB:
     def __getitem__(self, user_name):
         """Get user with given name."""
         return self._users[user_name]
+
+    def check_and_add_user(self, user_name):
+        """Add new user with given name to db.
+
+        If user already exists, do nothing.
+        """
+        self._users[user_name] = self._users.get(user_name, User(user_name))
