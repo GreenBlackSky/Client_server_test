@@ -50,5 +50,3 @@ def transform_config(config, config_must_have):
                 print(setting_name, "is of incorrect type", file=stderr)
                 return False
     return True
-
-# TODO Make transforme_config recursive

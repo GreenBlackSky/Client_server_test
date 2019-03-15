@@ -17,6 +17,7 @@ class ClientCore:
 
     class _State(Enum):
         CONNECTING = auto()
+        ASKING_RECONNECT = auto()
         ASKING_NAME = auto()
         CHECKING_NAME = auto()
         CONFIRMING_NAME = auto()
@@ -40,6 +41,7 @@ class ClientCore:
 
         self._states = {
             ClientCore._State.CONNECTING: self._connect,
+            ClientCore._State.ASKING_RECONNECT: self._ask_reconnect,
             ClientCore._State.ASKING_NAME: self._ask_name,
             ClientCore._State.CHECKING_NAME: self._check_user_name,
             ClientCore._State.CONFIRMING_NAME: self._confirm_user_name,
@@ -78,77 +80,70 @@ class ClientCore:
         """
         self._ui.greet()
         while self._state is not ClientCore._State.DISCONNECTING:
-            self._states[self._state]()
+            try:
+                self._states[self._state]()
+            except SystemExit:
+                self._state = ClientCore._State.DISCONNECTING
+            except (EOFError, ConnectionError):
+                self._state = ClientCore._State.ASKING_RECONNECT
         self._ui.farewell()
 
     def _connect(self):
         # both
         self._ui.say_wait_for_connection()
-        if self._server.ping():
-            self._ui.say_got_connection()
-            if self._user_name:
-                self._state = ClientCore._State.LOGGINIG_IN
-            else:
-                self._state = ClientCore._State.ASKING_NAME
-        elif not self._ui.ask_retry_connection():
+        self._server.reconnect()
+        self._server.ping()
+        self._ui.say_got_connection()
+        if self._user_name:
+            self._state = ClientCore._State.LOGGINIG_IN
+        else:
+            self._state = ClientCore._State.ASKING_NAME
+
+    def _ask_reconnect(self):
+        # user
+        if self._ui.ask_retry_connection():
+            self._state = ClientCore._State.CONNECTING
+        else:
             self._state = ClientCore._State.DISCONNECTING
 
     def _ask_name(self):
         # user
-        self._user_name, running = self._ui.ask_user_name()
-        if not running:
-            self._state = ClientCore._State.DISCONNECTING
-        else:
-            self._state = ClientCore._State.CHECKING_NAME
+        self._user_name = self._ui.ask_user_name()
+        self._state = ClientCore._State.CHECKING_NAME
 
     def _check_user_name(self):
         # server
-        user_exsits, connected = self._server.has_user(self._user_name)
-        if not connected:
-            self._state = ClientCore._State.CONNECTING
-        elif not user_exsits:
+        user_exsits = self._server.has_user(self._user_name)
+        if not user_exsits:
             self._state = ClientCore._State.CONFIRMING_NAME
         else:
             self._state = ClientCore._State.LOGGINIG_IN
 
     def _confirm_user_name(self):
         # user
-        confirm, running = self._ui.confirm_user_name(self._user_name)
-        if not running:
-            self._state = ClientCore._State.DISCONNECTING
-        elif confirm:
+        confirm = self._ui.confirm_user_name(self._user_name)
+        if confirm:
             self._state = ClientCore._State.LOGGINIG_IN
         else:
             self._state = ClientCore._State.ASKING_NAME
 
     def _log_in(self):
         # server
-        connected = self._server.log_in(self._user_name)
-        if not connected:
-            self._state = ClientCore._State.CONNECTING
-        else:
-            self._state = ClientCore._State.GETTING_COMMAND
+        self._server.log_in(self._user_name)
+        self._state = ClientCore._State.GETTING_COMMAND
 
     def _get_command(self):
         # user
-        self._last_command, running = self._ui.get_command()
-        if not running:
-            self._state = ClientCore._State.DISCONNECTING
-        else:
-            self._state = ClientCore._State.EXECUTING_COMMAND
+        self._last_command = self._ui.get_command()
+        self._state = ClientCore._State.EXECUTING_COMMAND
 
     def _execute_command(self):
         # server
         if self._last_command is Request.Type.LOG_OUT:
             self._state = ClientCore._State.LOGGINIG_OUT
         else:
-            self._last_result, connected = \
-                self._command_executors[self._last_command]()
-
-            if not connected:
-                self._state = ClientCore._State.CONNECTING
-            else:
-                self._state = ClientCore._State.RETRIEVING_RESULT
+            self._last_result = self._command_executors[self._last_command]()
+            self._state = ClientCore._State.RETRIEVING_RESULT
 
     def _retrieve_result(self):
         # user
@@ -157,15 +152,11 @@ class ClientCore:
 
     def _log_out(self):
         # both
-        confirm, running = self._ui.confirm_log_out()
-        if not running:
-            self._state = ClientCore._State.DISCONNECTING
-        elif confirm:
+        confirm = self._ui.confirm_log_out()
+        if confirm:
             self._server.log_out()
             self._state = ClientCore._State.ASKING_NAME
         else:
             self._state = ClientCore._State.GETTING_COMMAND
 
-# TODO Make log_in a command
-# TODO Create requests and process answers here
 # TODO It seems we have bug in log_in

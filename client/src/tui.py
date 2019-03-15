@@ -40,37 +40,34 @@ class TUI:
         while True:
             user_input = input(prompt + "\n")
             if user_input == 'quit':
-                if self._confirm_exit():
-                    return None, False
+                self._confirm_exit()
             elif user_input == 'help':
                 self._help()
             else:
-                return user_input, True
+                return user_input
 
     def _confirm_exit(self):
+        """Throw a SystemExit exception if user confirms exit."""
         while True:
             user_input = input("Are you sure you want to exit?(y/n)")
             user_input = user_input.strip().lower()
-            if user_input in {'q', 'y'}:
-                return True
-            if user_input == 'n':
-                return False
-            print("Unexpected symbol")
+            if user_input == 'y':
+                exit()
+            elif user_input == 'n':
+                return
+            else:
+                print("Unexpected symbol")
 
-    def _confirm_action(self, prompt, quitable=False):
-        """Ask user if he sure.
-
-        If quitable is set to True, user is given an option to quit.
-        In that case, an exception is raised.
-        """
+    def _confirm_action(self, prompt):
+        """Ask user if he sure."""
         while True:
             user_input = input(prompt + ("(y/n)\n")).strip().lower()
             if user_input == 'y':
                 return True
             elif user_input == 'n':
                 return False
-            elif quitable and user_input == 'q' and self._confirm_exit():
-                raise Exception("Quit")
+            elif user_input == 'quit':
+                self._confirm_exit()
             else:
                 print("Unexpected input. Print help for help.")
 
@@ -110,20 +107,12 @@ class TUI:
     def confirm_user_name(self, user_name):
         """Ask user to confirm user name."""
         print("No user with name:", user_name)
-        ret = (None, None)
-        try:
-            ret = (self._confirm_action("Create new user?", quitable=True),
-                   True)
-        except:
-            ret = (None, False)
-        return ret
+        return self._confirm_action("Create new user?")
 
     def get_command(self):
         """Get command from user."""
         while True:
-            user_input, running = self._get_input("Enter command:")
-            if not running:
-                return None, False
+            user_input = self._get_input("Enter command:")
 
             new_item = None
             if len(user_input.split()) >= 2:
@@ -135,7 +124,7 @@ class TUI:
             else:
                 if new_item:
                     self._last_item = new_item
-                return (self._commands[user_input], running)
+                return self._commands[user_input]
 
     @property
     def last_item(self):
@@ -169,16 +158,8 @@ class TUI:
 
     def confirm_log_out(self):
         """Ask user if he sure he wants to log out."""
-        ret = (None, None)
-        try:
-            ret = (self._confirm_action("Log out?", quitable=True),
-                   True)
-        except:
-            ret = (None, False)
-        return ret
+        return self._confirm_action("Log out?")
 
     def farewell(self):
         """Print farewell message."""
         print("Thank you for playing!")
-
-# TODO Replace Rust-style quit by exceptions
