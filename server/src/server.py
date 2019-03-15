@@ -4,7 +4,7 @@ import addshare
 from confighandler import open_config, transform_config
 from item_db import ItemsDB
 from user_db import UsersDB
-from netserver import NetworkServer
+from servercore import ServerCore
 from clienthandler import ClientHandler
 
 
@@ -39,12 +39,10 @@ def run():
         print("Unable to read users data base")
         return
 
-    ClientHandler.set_db(items_db, users_db)
-    ClientHandler.set_limits(config["min_init_credits"],
+    server_core = ServerCore(items_db, users_db,
+                             config["min_init_credits"],
                              config["max_init_credits"])
-    NetworkServer(config["port"], ClientHandler).exec()
-
-    # ClientHandler(ServerCore(items_db, users_db)).exec()
+    ClientHandler(config["port"], server_core).exec()
 
 if __name__ == "__main__":
     run()
