@@ -11,7 +11,7 @@ class ServerHandler:
     def __init__(self, host, port, timeout):
         """Initialize client.
 
-        On start client will try to connect to given server,
+        Client will try to connect to given server,
         on given port with given timeout(ms).
         """
         self._host, self._port = host, port
@@ -39,8 +39,7 @@ class ServerHandler:
 
         Raises an exception if connection lost.
         """
-        answer = loads(self._socket.recv(1024))
-        return answer
+        return loads(self._socket.recv(1024))
 
     def ping(self):
         """Check if client has connection with server."""
@@ -62,50 +61,34 @@ class ServerHandler:
     def has_user(self, user_name):
         """Check if server has an user with given name."""
         self._send_request(Request.Type.USER_EXISTS, user_name)
-        answer = self._get_responce()
-        return answer.data
+        return self._get_responce()
 
     def get_name(self):
         """Request name of current user."""
         self._send_request(Request.Type.GET_NAME)
-        answer = self._get_responce()
-        if answer.success:
-            return answer.data
-        else:
-            return answer.message
+        return self._get_responce()
 
     def get_credits(self):
         """Request number of credits user have."""
         self._send_request(Request.Type.GET_CREDITS)
-        answer = self._get_responce()
-        if answer.success:
-            return answer.data
-        else:
-            return answer.message
+        return self._get_responce()
 
     def get_my_items(self):
         """Request items user have."""
         self._send_request(Request.Type.GET_MY_ITEMS)
-        answer = self._get_responce()
-        if answer.success:
-            return answer.data
-        else:
-            return answer.message
+        return self._get_responce()
 
     def get_all_items(self):
         """Request all acessible items."""
         self._send_request(Request.Type.GET_ALL_ITEMS)
-        answer = self._get_responce()
-        return answer.data
+        return self._get_responce()
 
     def purchase_item(self, item):
         """Request buying item."""
         self._send_request(Request.Type.PURCHASE_ITEM, item)
-        answer = self._get_responce()
-        return (answer.data, answer.message)
+        return self._get_responce()
 
     def sell_item(self, item):
         """Request selling item."""
         self._send_request(Request.Type.SELL_ITEM, item)
-        answer = self._get_responce()
-        return (answer.data, answer.message)
+        return self._get_responce()

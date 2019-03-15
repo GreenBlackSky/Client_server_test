@@ -84,9 +84,10 @@ class TUI:
         print("Welcome!")
         self._help()
 
-    def say_name(self, name):
-        """Show user his name."""
-        print(name)
+    @property
+    def last_item(self):
+        """Get name of last chosen item."""
+        return self._last_item
 
     def say_wait_for_connection(self):
         """Print message about establishing connection."""
@@ -126,35 +127,34 @@ class TUI:
                     self._last_item = new_item
                 return self._commands[user_input]
 
-    @property
-    def last_item(self):
-        """Get name of last chosen item."""
-        return self._last_item
+    def say_name(self, result):
+        """Show user his name."""
+        if result.success:
+            print(result.data)
+        else:
+            print(result.message)
 
-    def show_credits(self, credits_sum):
+    def show_credits(self, result):
         """Show user number of his credits."""
-        print("Your account:", credits_sum)
+        print("Your account:", result.data)
 
-    def print_list(self, items):
+    def print_list(self, result):
         """Print list of items."""
-        if not items:
+        if not result.success:
+            print(result.message)
+        elif not result.data:
             print("Empty")
-        for item in items:
-            print(item)
+        else:
+            for item in result.data:
+                print(item)
 
     def show_deal_result(self, result):
-        """Print result of last user operation.
-
-        Result must be unpackable into two values:
-        binary flag, which indicates success of operation
-        message for user.
-        """
-        result, message = result
-        if result:
+        """Print result of last user operation."""
+        if result.success:
             print("Success!")
         else:
             print("Operation Failed.")
-        print(message)
+        print(result.message)
 
     def confirm_log_out(self):
         """Ask user if he sure he wants to log out."""

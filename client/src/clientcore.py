@@ -113,8 +113,8 @@ class ClientCore:
 
     def _check_user_name(self):
         # server
-        user_exsits = self._server.has_user(self._user_name)
-        if not user_exsits:
+        answer = self._server.has_user(self._user_name)
+        if not answer.data:
             self._state = ClientCore._State.CONFIRMING_NAME
         else:
             self._state = ClientCore._State.LOGGINIG_IN

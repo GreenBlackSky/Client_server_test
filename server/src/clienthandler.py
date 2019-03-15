@@ -171,3 +171,4 @@ class ClientHandler(BaseRequestHandler):
 # TODO raise and catch exception if no item or not logged in
 # TODO separate ClientHandler and ServerCore
 # TODO add users command to list all users
+# TODO Modify db
