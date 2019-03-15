@@ -8,15 +8,34 @@ Simple console app, which allows to communicate with server. User can:
 * check list of all items in game
 * purchase items from list, using his credits, or sell any of his items
 
+`client.py` is executable for client.
+
 ## Server
-Simple net server app. It is used to handle connection with client, provide it with information abot user account and accessible items. Also it gets purchase requests and allows or forbide them. Two data bases are used on server-side. One for items and other for users.
+Simple net server app. It is used to handle connection with client, provide it with information abot user account and accessible items. Also it gets purchase requests and allows or forbide them. Two data bases are used on server-side. One for items and other for users. Config for server must include pathes from project root to both data bases.
+
+## Config
+Both client and server must be provided with path to config. Path must be rative from project root. If it is not, application will search for config in default location, which is `{prj}\client\cfg\client_config.json` for client and `{prj}\server\cfg\server_config.json` for server. Config file is in JSON format.
+
+Client config must contain following fields:
+* `host` - ip adress of game server
+* `port` - port on game server to connect to
+* `timeout` - connection timeout
+
+Server config must contain following fields:
+* `port` - port to listen to
+* `max_init_credits` - lower bound for log in credits
+* `min_init_credits` - upper bound for log in credits
+* `items_db_path` - relative path to data base with items from project root
+* `users_db_path` - relative path to data base with users from project root
+
+By default both databases are stored in `{prj}\server\data`
 
 ## Dependecies
 * Project has been developed with use of python 3.6
 * Standart mofule `json` is used to read configuration both for server and for client. 
 * Standart module `socket` is used for communication between server and client.
-* Both databases are implemented as sqlite db, so `sqlite3` is used to handle them.
-* Not a dependancy, but worth mentioning. `server.py` and `client.py` are both meant to be executed from project root. If you want to run any of them from another place, you would want to pass it path to config through argument. Also, a dirty little trick has been used to include shared modules. I didn't want to mess with `PYTHONPATH` or install my packages into system.
+* Both databases are implemented as `json` files. Server config must contain relative pathes to them.
+* Not a dependancy, but worth mentioning. `server.py` and `client.py` are both meant to be executed from project root. If you want to run any of them from another place, you would want to pass it path to config through argument. Also, a little trick has been used to include shared modules. I didn't want to mess with `PYTHONPATH` or install my packages into system.
 
 ## Components
 #### Client-side
@@ -32,4 +51,4 @@ Simple net server app. It is used to handle connection with client, provide it w
 * commands module represents... commands! Commands, that user gives to client.
 
 Although, these components are quite naive, they are designed to be replaceble. Query-handling in ClientHandler can be improved by using Celery.
-Sqlite as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.
+JSON as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.

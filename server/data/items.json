@@ -1,0 +1,57 @@
+[
+    {
+        "name": "hat",
+        "buy": 10,
+        "sell": 5
+    },
+    {
+        "name": "No leaf clover",
+        "buy": 10,
+        "sell": 5
+    },
+    {
+        "name": "shirt",
+        "buy": 20,
+        "sell": 10
+    },
+    {
+        "name": "small pants",
+        "buy": 40,
+        "sell": 20
+    },
+    {
+        "name": "boots",
+        "buy": 80,
+        "sell": 40
+    },
+    {
+        "name": "old shovel",
+        "buy": 160,
+        "sell": 80
+    },
+    {
+        "name": "Longclaw",
+        "buy": 123,
+        "sell": 12
+    },
+    {
+        "name": "Drogon",
+        "buy": 800,
+        "sell": 400
+    },
+    {
+        "name": "Rhaegal",
+        "buy": 700,
+        "sell": 350
+    },
+    {
+        "name": "Viserion",
+        "buy": 10,
+        "sell": 5
+    },
+    {
+        "name": "Mountain",
+        "buy": 50,
+        "sell": 20
+    }
+]

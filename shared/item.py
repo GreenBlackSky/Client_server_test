@@ -1,6 +1,4 @@
-"""Module contains class Item and ItemsDB."""
-
-# import sqlite3
+"""Module contains class Item."""
 
 
 class Item:
@@ -47,16 +45,9 @@ class Item:
             self.selling_price
         )
 
+    def __str__(self):
+        """Create string of item.
 
-class ItemsDB:
-    """Class handles sqlite-based data base with items."""
-
-    def __init__(self, path):
-        """Open connection to data base with items."""
-        self.dummy_items = {
-            "hat": Item("hat", 10, 5),
-            "shirt": Item("shirt", 20, 10),
-            "pants": Item("pants", 40, 20),
-            "boots": Item("boots", 80, 40),
-            "shovel": Item("shovel", 160, 80)
-        }
+        Contains new lines.
+        """
+        return repr(self)

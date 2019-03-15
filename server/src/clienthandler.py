@@ -4,8 +4,6 @@ from socketserver import BaseRequestHandler
 from pickle import dumps, loads
 from random import randint
 from netrequest import Request, Answer
-from item import Item
-from account import Account
 
 
 class ClientHandler(BaseRequestHandler):
@@ -26,16 +24,8 @@ class ClientHandler(BaseRequestHandler):
         If data bases are not set, exception will rise on connection attempt.
         items_db and users_db must support some basic dict operations.
         """
-        # ClientHandler._items = items_db
-        # ClientHandler._users = users_db
-        ClientHandler._users = dict()
-        ClientHandler._items = {
-            "hat": Item("hat", 10, 5),
-            "shirt": Item("shirt", 20, 10),
-            "pants": Item("pants", 40, 20),
-            "boots": Item("boots", 80, 40),
-            "shovel": Item("shovel", 160, 80)
-        }
+        ClientHandler._items = items_db
+        ClientHandler._users = users_db
 
     @staticmethod
     def set_limits(min_limit, max_limit):
@@ -112,7 +102,6 @@ class ClientHandler(BaseRequestHandler):
 
     def _log_in(self, user_name):
         if user_name not in self._users:
-            # self._users.new_user(user_name)
             self._users[user_name] = Account(user_name)
 
         self._user = self._users[user_name]
@@ -133,7 +122,7 @@ class ClientHandler(BaseRequestHandler):
 
     def _get_all_items(self, _):
         request_type = Request.Type.GET_ALL_ITEMS
-        return Answer(request_type, data=list(self._items.values()))
+        return Answer(request_type, data=self._items.values())
 
     def _buy_item(self, item_name):
         request_type = Request.Type.PURCHASE_ITEM
@@ -180,3 +169,5 @@ class ClientHandler(BaseRequestHandler):
         return ret
 
 # TODO raise and catch exception if no item or not logged in
+# TODO separate ClientHandler and ServerCore
+# TODO add users command to list all users

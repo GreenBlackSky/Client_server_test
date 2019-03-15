@@ -44,8 +44,8 @@ class ServerHandler:
             ret = False
         return ret
 
-    def has_account(self, user_name):
-        """Check if server has an account with given name."""
+    def has_user(self, user_name):
+        """Check if server has an user with given name."""
         connected = True
         answer = None
         try:
@@ -82,7 +82,7 @@ class ServerHandler:
         return connected
 
     def get_credits(self):
-        """Request number of credits on users account."""
+        """Request number of credits user have."""
         connected = True
         answer = None
         try:
@@ -159,3 +159,4 @@ class ServerHandler:
         return (answer.data, answer.message), connected
 
 # TODO Pass exceptions to upper level
+# TODO Reconnect if session was broken

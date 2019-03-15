@@ -2,6 +2,6 @@
     "port": 6543,
     "max_init_credits": 100,
     "min_init_credits": 1,
-    "items_db_path": "a",
-    "users_db_path": "b"
+    "items_db_path": "/server/data/items.json",
+    "users_db_path": "/server/data/users.json"
 }

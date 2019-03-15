@@ -126,8 +126,9 @@ class TUI:
                 return None, False
 
             new_item = None
-            if len(user_input.split()) == 2:
-                user_input, new_item = user_input.split()
+            if len(user_input.split()) >= 2:
+                user_input, *new_item = user_input.split()
+                new_item = " ".join(new_item)
 
             if user_input not in self._commands:
                 print("Unexpected input. Print help for help.")

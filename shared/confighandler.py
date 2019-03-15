@@ -17,16 +17,14 @@ def open_config(default_path):
         conf_path = default_path
 
     try:
-        config_stream = open(conf_path, 'r')
-        config = load_json(config_stream)
+        with open(conf_path, 'r') as config_stream:
+            config = load_json(config_stream)
     except OSError:
         print("Can't open config file", file=stderr)
         config = None
     except:
         print("Can't parse config file", file=stderr)
         config = None
-    else:
-        config_stream.close()
 
     return config
 

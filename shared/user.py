@@ -1,20 +1,18 @@
-"""Module contains tools for working with user accounts."""
-
-# import sqlite3
+"""Module contains class User."""
 
 
-class Account:
-    """Account contains information about user."""
+class User:
+    """User contains information about user."""
 
     def __init__(self, name):
-        """Create new account."""
+        """Create new user."""
         self._name = name
         self._credits = 0
         self._items = list()
 
     @property
     def name(self):
-        """Get user name"""
+        """Get user name."""
         return self._name
 
     @property
@@ -31,12 +29,9 @@ class Account:
         """Get items user have."""
         return self._items
 
+    def __repr__(self):
+        """Represent user in string form.
 
-class UsersDB:
-    """Class handles sqlite-based data base with users."""
-
-    def __init__(self, path):
-        """Open connection with data base with accounts."""
-        self.dummy_users = dict()
-
-# TODO implement __iter__
+        Contains new lines.
+        """
+        return self.name + "\n" + [str(item) + "\n" for item in self.items]

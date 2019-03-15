@@ -103,10 +103,10 @@ class ClientCore:
 
     def _check_user_name(self):
         # server
-        account_exsits, connected = self._server.has_account(self._user_name)
+        user_exsits, connected = self._server.has_user(self._user_name)
         if not connected:
             self._state = ClientCore._State.CONNECTING
-        elif not account_exsits:
+        elif not user_exsits:
             self._state = ClientCore._State.CONFIRMING_NAME
         else:
             self._state = ClientCore._State.LOGGINIG_IN
@@ -168,3 +168,4 @@ class ClientCore:
 
 # TODO Make log_in a command
 # TODO Create requests and process answers here
+# TODO It seems we have bug in log_in

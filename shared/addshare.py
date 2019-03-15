@@ -15,4 +15,4 @@ def get_abs_path():
     path_to_project = "/".join(path_script.split("/")[:-3])
     return path_to_project
 
-PATH.append(get_abs_path() + "/shared")
+# PATH.append(get_abs_path() + "/shared")

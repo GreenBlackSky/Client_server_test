@@ -1,15 +1,18 @@
-"""Little dirty trick to add shared modules into project.
+"""Little trick to add shared modules into project.
 
-I didn't want to mess with global PATH or install my packeges.
+I don't want to mess with global PATH or install my packeges.
 So this module adds path to shared directory into path of project.
 Both server and client have copy of this module.
 """
 
 from sys import argv, path as PATH
-from os import getcwd
 from os.path import abspath
 
-PATH_TO_SCRIPT = abspath(argv[0]).replace("\\", "/")
-PATH_TO_FOLDER = "/".join(PATH_TO_SCRIPT.split("/")[:-3])
-PATH_TO_SHARED = PATH_TO_FOLDER + "/shared"
-PATH.append(PATH_TO_SHARED)
+
+def get_abs_path():
+    """Get absolute path to project."""
+    path_script = abspath(argv[0]).replace("\\", "/")
+    path_to_project = "/".join(path_script.split("/")[:-3])
+    return path_to_project
+
+PATH.append(get_abs_path() + "/shared")
