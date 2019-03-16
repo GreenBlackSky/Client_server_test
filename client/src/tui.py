@@ -8,7 +8,7 @@ class TUI:
 
     Most of methods could be replaced by more direct calls, I know.
     BUT some another implementation may use entirly different mechaincs.
-    TUI was meant to be replaced by any other UI class,
+    TUI was meant to be replaceable by any other UI class,
     which implements necessary methods.
     """
 
@@ -116,20 +116,28 @@ class TUI:
 # Input methods
 
     def ask_retry_connection(self):
-        """Inform user about failed connection and ask retry."""
+        """Inform user about failed connection and ask retry.
+
+        May rise SystemExit exception."""
         return self._confirm_action("Connection failed. Retry?")
 
     def ask_user_name(self):
-        """Get user name."""
+        """Get user name.
+
+        May rise SystemExit exception."""
         return self._get_input("Enter your login:")
 
     def confirm_user_name(self, user_name):
-        """Ask user to confirm user name."""
+        """Ask user to confirm user name.
+
+        May rise SystemExit exception."""
         print("No user with name:", user_name)
         return self._confirm_action("Create new user?")
 
     def get_command(self):
-        """Get command from user."""
+        """Get command from user.
+
+        May rise SystemExit exception."""
         while True:
             user_input = self._get_input("Enter command:")
 
@@ -146,27 +154,27 @@ class TUI:
                 return self._commands[user_input]
 
     def confirm_log_out(self):
-        """Ask user if he sure he wants to log out."""
+        """Ask user if he sure he wants to log out.
+
+        May rise SystemExit exception."""
         return self._confirm_action("Log out?")
 
 # Output methods
 
     def show_result(self, result):
+        """Show user answer from server."""
         self._result_retrievers[result.request_type](result)
 
     def _say_name(self, result):
-        """Show user his name."""
         if result.success:
             print(result.data)
         else:
             print(result.message)
 
     def _show_credits(self, result):
-        """Show user number of his credits."""
         print("Your account:", result.data)
 
     def _print_list(self, result):
-        """Print list of items."""
         if not result.success:
             print(result.message)
         elif not result.data:
@@ -176,7 +184,6 @@ class TUI:
                 print(item)
 
     def _show_deal_result(self, result):
-        """Print result of last user operation."""
         if result.success:
             print("Success!")
         else:

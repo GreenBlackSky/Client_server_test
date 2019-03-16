@@ -4,7 +4,7 @@ import addshare
 from confighandler import open_config, transform_config
 from item_db import ItemsDB
 from user_db import UsersDB
-from servercore import ServerCore
+from serverfabric import ServerFabric
 from clienthandler import ClientHandler
 
 
@@ -40,11 +40,11 @@ def run():
         print("Unable to read users data base")
         return
 
-    server_core = ServerCore(items_db, users_db,
+    server_fabric = ServerFabric(items_db, users_db,
                              config["min_init_credits"],
                              config["max_init_credits"],
                              config["save_frequency"])
-    ClientHandler(config["port"], server_core).exec()
+    ClientHandler(config["port"], server_fabric).exec()
 
 if __name__ == "__main__":
     run()

@@ -1,7 +1,32 @@
 [
     {
-        "credits": 8,
-        "name": "Dany",
+        "items": [
+            {
+                "buy": 50,
+                "name": "Mountain",
+                "sell": 20
+            }
+        ],
+        "credits": 250,
+        "name": "Cersei"
+    },
+    {
+        "items": [
+            {
+                "buy": 123,
+                "name": "Longclaw",
+                "sell": 12
+            },
+            {
+                "buy": 10,
+                "name": "hat",
+                "sell": 5
+            }
+        ],
+        "credits": 27,
+        "name": "Jon"
+    },
+    {
         "items": [
             {
                 "buy": 800,
@@ -18,33 +43,8 @@
                 "name": "Viserion",
                 "sell": 5
             }
-        ]
-    },
-    {
-        "credits": 250,
-        "name": "Cersei",
-        "items": [
-            {
-                "buy": 50,
-                "name": "Mountain",
-                "sell": 20
-            }
-        ]
-    },
-    {
-        "credits": 16,
-        "name": "Jon",
-        "items": [
-            {
-                "buy": 123,
-                "name": "Longclaw",
-                "sell": 12
-            },
-            {
-                "buy": 10,
-                "name": "hat",
-                "sell": 5
-            }
-        ]
+        ],
+        "credits": 82,
+        "name": "Dany"
     }
 ]

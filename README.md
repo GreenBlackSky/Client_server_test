@@ -13,6 +13,8 @@ Simple console app, which allows to communicate with server. User can:
 ## Server
 Simple net server app. It is used to handle connection with client, provide it with information abot user account and accessible items. Also it gets purchase requests and allows or forbide them. Two data bases are used on server-side. One for items and other for users. Config for server must include pathes from project root to both data bases.
 
+`server.py` is executable for server.
+
 ## Config
 Both client and server must be provided with path to config. Path must be rative from project root. If it is not, application will search for config in default location, which is `{prj}\client\cfg\client_config.json` for client and `{prj}\server\cfg\server_config.json` for server. Config file is in JSON format.
 
@@ -27,6 +29,7 @@ Server config must contain following fields:
 * `min_init_credits` - upper bound for log in credits
 * `items_db_path` - relative path to data base with items from project root
 * `users_db_path` - relative path to data base with users from project root
+* `save_frequency` - frequency of commits to users data base. (In turms of buy/sell operations.)
 
 By default both databases are stored in `{prj}\server\data`
 
@@ -41,14 +44,16 @@ By default both databases are stored in `{prj}\server\data`
 #### Client-side
 * Tui - text user interface. Class passes messages from user to ClientCore and vice-versa.
 * ClientCore class contains all client-side logic.
+* ServerHandler is TCP based bridge between ClientCore and server.
 #### Server-side
-* ConnectionHandler class handles new connections with clients.
-* DBHandler class handles data bases.
-* ClientHandler class handles client. Contains server-side logic of application.
+* ClientHandler class handles connections with clients. TCP-based.
+* ServerCore class contains server-side logic. It takes requests from ClientHandler, processes them and response with answers.
+* ServerFabric class produces instances of ServerCore for every new connection.
+* ItemsDB and UsersDB handles data bases with items and users respectively. Both JSON-based.
 #### Shared
-* Net class is used to maintain connection between client and server.
+* Request and Answer classe are used to pass information between client and server.
 * ConfigHandler is used to open, parse and check configuration.
-* commands module represents... commands! Commands, that user gives to client.
+* User and Item classes represent user and item =).
 
 Although, these components are quite naive, they are designed to be replaceble. Query-handling in ClientHandler can be improved by using Celery.
 JSON as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.

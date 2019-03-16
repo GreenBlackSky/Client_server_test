@@ -3,13 +3,15 @@
 from socketserver import TCPServer, ThreadingMixIn, BaseRequestHandler
 from pickle import dumps, loads
 
-
 class ClientHandler(ThreadingMixIn, TCPServer):
     """ClientHandler handles connection with clients on server side."""
 
     class _Handler(BaseRequestHandler):
 
-        server_core = None
+        server_fabric = None
+
+        def setup(self):
+            self.server_core = self.server_fabric.get_core()
 
         def handle(self):
             print("New connection:", self.client_address)
@@ -24,10 +26,13 @@ class ClientHandler(ThreadingMixIn, TCPServer):
             print("Connection lost:", self.client_address)
             self.request.close()
 
-    def __init__(self, port, server_core):
-        """Initialize server, listening to given port."""
+    def __init__(self, port, server_fabric):
+        """Initialize server, listening to given port.
+        
+        Takes port and server core fabric as arguments.
+        """
         super().__init__(("127.0.0.1", port), ClientHandler._Handler)
-        ClientHandler._Handler.server_core = server_core
+        ClientHandler._Handler.server_fabric = server_fabric
 
     def exec(self):
         """Start an execution loop."""

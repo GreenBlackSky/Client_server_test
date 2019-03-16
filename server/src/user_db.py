@@ -76,3 +76,5 @@ class UsersDB:
 
         with open(get_abs_path() + self._path, "w") as stream:
             dump(db, stream)
+
+# TODO OOP-style load and commit

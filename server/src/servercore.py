@@ -53,6 +53,7 @@ class ServerCore:
         }
 
     def process_request(self, request):
+        """PRocess request from client and return answer."""
         self._operation_count = \
             (self._operation_count + 1)%self._save_frequency
         if self._operation_count == 0:

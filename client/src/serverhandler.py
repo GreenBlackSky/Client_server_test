@@ -1,4 +1,4 @@
-"""Module contains NetworkClient."""
+"""Module contains ServerHandler."""
 
 import socket
 from pickle import dumps, loads
@@ -11,7 +11,7 @@ class ServerHandler:
     def __init__(self, host, port, timeout):
         """Initialize client.
 
-        Client will try to connect to given server,
+        Later client will try to connect to given server,
         on given port with given timeout(ms).
         """
         self._host, self._port = host, port
@@ -42,5 +42,9 @@ class ServerHandler:
         return loads(self._socket.recv(1024))
 
     def execute(self, request_type, arg=None):
+        """Send request and get answer from server.
+
+        Raises an exception if connection lost.
+        """
         self._send_request(request_type, arg)
         return self._get_responce()
