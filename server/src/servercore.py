@@ -22,16 +22,17 @@ class NoSuchItem(Exception):
 class ServerCore:
     """Class contains main server logic."""
 
-    def __init__(self, items_db, users_db, min_limit, max_limit):
-        """Create handler.
-
-        Overridden to check if data bases are set.
-        """
+    def __init__(self, items_db, users_db,
+                       min_limit, max_limit,
+                       save_frequency):
+        """Create ServerCore."""
         self._items = items_db
         self._users = users_db
         self._new_credits_max = max_limit
         self._new_credits_min = min_limit
         self._user = None
+        self._operation_count = 1
+        self._save_frequency = save_frequency
 
         # Data to return on request
         self._get_requset_handlers = {
@@ -52,6 +53,11 @@ class ServerCore:
         }
 
     def process_request(self, request):
+        self._operation_count = \
+            (self._operation_count + 1)%self._save_frequency
+        if self._operation_count == 0:
+            self._users.commit()
+
         request_type, data = request.request_type, request.data
         try:
             if request_type in self._get_requset_handlers:
@@ -98,6 +104,7 @@ class ServerCore:
         request_type = Request.Type.LOG_OUT
         self._check_user()
         self._user = None
+        self._users.commit()
         return Answer(request_type)
 
     def _get_all_items(self, _):
@@ -117,6 +124,7 @@ class ServerCore:
             ret = Answer(request_type,
                          success=False,
                          message="Not enough money")
+        self._operation_count += 1
         return ret
 
     def _sell_item(self, item_name):
@@ -132,7 +140,7 @@ class ServerCore:
             ret = Answer(request_type,
                          success=False,
                          message="No such item")
+        self._operation_count += 1
         return ret
 
 # TODO add users command to list all users
-# TODO Modify db

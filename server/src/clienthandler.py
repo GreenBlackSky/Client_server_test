@@ -5,7 +5,7 @@ from pickle import dumps, loads
 
 
 class ClientHandler(ThreadingMixIn, TCPServer):
-    """NetworkServer handles connection with clients on server side."""
+    """ClientHandler handles connection with clients on server side."""
 
     class _Handler(BaseRequestHandler):
 
@@ -13,9 +13,10 @@ class ClientHandler(ThreadingMixIn, TCPServer):
 
         def handle(self):
             print("New connection:", self.client_address)
-            data = 'dummy'
-            while len(data):
+            while True:
                 request = self.request.recv(1024)
+                if not request:
+                    break
                 request = loads(request)
                 answer = self.server_core.process_request(request)
                 answer = dumps(answer)

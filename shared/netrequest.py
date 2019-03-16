@@ -1,6 +1,6 @@
 """Module with some stuff required by both server and client."""
 
-from enum import Enum, auto
+from enum import Enum
 
 
 class Request:
@@ -9,16 +9,16 @@ class Request:
     class Type(Enum):
         """Enum, which contains commands."""
 
-        PING = auto()
-        USER_EXISTS = auto()
-        LOG_IN = auto()
-        GET_NAME = auto()
-        GET_CREDITS = auto()
-        GET_MY_ITEMS = auto()
-        GET_ALL_ITEMS = auto()
-        PURCHASE_ITEM = auto()
-        SELL_ITEM = auto()
-        LOG_OUT = auto()
+        PING = 0
+        USER_EXISTS = 1
+        LOG_IN = 2
+        GET_NAME = 3
+        GET_CREDITS = 4
+        GET_MY_ITEMS = 5
+        GET_ALL_ITEMS = 6
+        PURCHASE_ITEM = 7
+        SELL_ITEM = 8
+        LOG_OUT = 9
 
     def __init__(self, request_type, data=None):
         """Create new request."""

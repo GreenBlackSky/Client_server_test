@@ -1,44 +1,49 @@
 [
     {
-        "name": "Jon",
-        "credits": 12,
-        "items": [
-            {
-                "name": "Longclaw",
-                "buy": 123,
-                "sell": 12
-            }
-        ]
-    },
-    {
-        "name": "Dany",
         "credits": 8,
+        "name": "Dany",
         "items": [
             {
-                "name": "Drogon",
                 "buy": 800,
+                "name": "Drogon",
                 "sell": 400
             },
             {
-                "name": "Rhaegal",
                 "buy": 700,
+                "name": "Rhaegal",
                 "sell": 350
             },
             {
-                "name": "Viserion",
                 "buy": 10,
+                "name": "Viserion",
                 "sell": 5
             }
         ]
     },
     {
-        "name": "Cersei",
         "credits": 250,
+        "name": "Cersei",
         "items": [
             {
-                "name": "Mountain",
                 "buy": 50,
+                "name": "Mountain",
                 "sell": 20
+            }
+        ]
+    },
+    {
+        "credits": 16,
+        "name": "Jon",
+        "items": [
+            {
+                "buy": 123,
+                "name": "Longclaw",
+                "sell": 12
+            },
+            {
+                "buy": 10,
+                "name": "hat",
+                "sell": 5
             }
         ]
     }

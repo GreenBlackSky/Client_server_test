@@ -1,7 +1,7 @@
 """Module contains ClientCore class."""
 
 from netrequest import Request
-from enum import Enum, auto
+from enum import Enum
 
 
 class ClientCore:
@@ -16,17 +16,17 @@ class ClientCore:
     """
 
     class _State(Enum):
-        CONNECTING = auto()
-        ASKING_RECONNECT = auto()
-        ASKING_NAME = auto()
-        CHECKING_NAME = auto()
-        CONFIRMING_NAME = auto()
-        LOGGINIG_IN = auto()
-        GETTING_COMMAND = auto()
-        EXECUTING_COMMAND = auto()
-        RETRIEVING_RESULT = auto()
-        LOGGINIG_OUT = auto()
-        DISCONNECTING = auto()
+        CONNECTING = 0
+        ASKING_RECONNECT = 1
+        ASKING_NAME = 2
+        CHECKING_NAME = 3
+        CONFIRMING_NAME = 4
+        LOGGINIG_IN = 5
+        GETTING_COMMAND = 6
+        EXECUTING_COMMAND = 7
+        RETRIEVING_RESULT = 8
+        LOGGINIG_OUT = 9
+        DISCONNECTING = 10
 
     def __init__(self, server, ui):
         """Create new ClientCore object.
@@ -140,5 +140,3 @@ class ClientCore:
             self._state = ClientCore._State.ASKING_NAME
         else:
             self._state = ClientCore._State.GETTING_COMMAND
-
-# TODO It seems we have bug in log_in

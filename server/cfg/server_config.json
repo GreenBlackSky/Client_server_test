@@ -2,6 +2,7 @@
     "port": 6543,
     "max_init_credits": 100,
     "min_init_credits": 1,
+    "save_frequency": 10,
     "items_db_path": "/server/data/items.json",
     "users_db_path": "/server/data/users.json"
 }
