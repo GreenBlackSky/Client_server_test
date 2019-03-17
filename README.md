@@ -37,7 +37,7 @@ By default both databases are stored in `{prj}\server\data`
 * Project has been developed with use of python 3.6
 * Standart mofule `json` is used to read configuration both for server and for client. 
 * Standart module `socket` is used for communication between server and client.
-* Both databases are implemented as `json` files. Server config must contain relative pathes to them.
+* Both databases are also implemented as `json` files. Server config must contain relative pathes to them.
 * Not a dependancy, but worth mentioning. `server.py` and `client.py` are both meant to be executed from project root. If you want to run any of them from another place, you would want to pass it path to config through argument. Also, a little trick has been used to include shared modules. I didn't want to mess with `PYTHONPATH` or install my packages into system.
 
 ## Components
@@ -47,8 +47,7 @@ By default both databases are stored in `{prj}\server\data`
 * ServerHandler is TCP based bridge between ClientCore and server.
 #### Server-side
 * ClientHandler class handles connections with clients. TCP-based.
-* ServerCore class contains server-side logic. It takes requests from ClientHandler, processes them and response with answers.
-* ServerFabric class produces instances of ServerCore for every new connection.
+* ServerCore class contains server-side logic. It creates new handler foe each new client connection. Handler takes requests from ClientHandler, processes them and response with answers. All Handlers share users and items data bases.
 * ItemsDB and UsersDB handles data bases with items and users respectively. Both JSON-based.
 #### Shared
 * Request and Answer classe are used to pass information between client and server.
