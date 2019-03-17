@@ -1,6 +1,6 @@
 """Module contains ClientCore class."""
 
-from netrequest import Request
+from request import Request
 from enum import Enum
 
 
@@ -93,9 +93,9 @@ class ClientCore:
 
     def _check_user_name(self):
         # server
-        answer = self._server.execute(Request.Type.USER_EXISTS,
+        responce = self._server.execute(Request.Type.USER_EXISTS,
                                       self._user_name)
-        if not answer.data:
+        if not responce.data:
             self._state = ClientCore._State.CONFIRMING_NAME
         else:
             self._state = ClientCore._State.LOGGINIG_IN

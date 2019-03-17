@@ -47,10 +47,10 @@ By default both databases are stored in `{prj}\server\data`
 * ServerHandler is TCP based bridge between ClientCore and server.
 #### Server-side
 * ClientHandler class handles connections with clients. TCP-based.
-* ServerCore class contains server-side logic. It creates new handler foe each new client connection. Handler takes requests from ClientHandler, processes them and response with answers. All Handlers share users and items data bases.
+* ServerCore class contains server-side logic. It creates new handler foe each new client connection. Handler takes requests from ClientHandler, processes them and responce with answers. All Handlers share users and items data bases.
 * ItemsDB and UsersDB handles data bases with items and users respectively. Both JSON-based.
 #### Shared
-* Request and Answer classe are used to pass information between client and server.
+* Request and Responce classes are used to pass information between client and server.
 * ConfigHandler is used to open, parse and check configuration.
 * User and Item classes represent user and item =).
 

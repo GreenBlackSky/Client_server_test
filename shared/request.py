@@ -35,11 +35,11 @@ class Request:
         return self._data
 
 
-class Answer(Request):
-    """Answer, that is used to pass info from server to client."""
+class Responce(Request):
+    """Responce, that is used to pass info from server to client."""
 
     def __init__(self, request_type, success=True, data=None, message=None):
-        """Create new answer."""
+        """Create new responce."""
         super().__init__(request_type, data)
         self._success = success
         self._message = message

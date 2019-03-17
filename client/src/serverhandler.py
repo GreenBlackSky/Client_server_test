@@ -2,7 +2,7 @@
 
 import socket
 from pickle import dumps, loads
-from netrequest import Request
+from request import Request
 
 
 class ServerHandler:
@@ -35,14 +35,14 @@ class ServerHandler:
         self._socket.sendall(dumps(request))
 
     def _get_responce(self):
-        """Get answer from server.
+        """Get responce from server.
 
         Raises an exception if connection lost.
         """
         return loads(self._socket.recv(1024))
 
     def execute(self, request_type, arg=None):
-        """Send request and get answer from server.
+        """Send request and get responce from server.
 
         Raises an exception if connection lost.
         """

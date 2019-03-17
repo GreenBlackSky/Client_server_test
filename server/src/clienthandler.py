@@ -20,9 +20,9 @@ class ClientHandler(ThreadingMixIn, TCPServer):
                 if not request:
                     break
                 request = loads(request)
-                answer = self.server_core.process_request(request)
-                answer = dumps(answer)
-                self.request.send(answer)
+                responce = self.server_core.process_request(request)
+                responce = dumps(responce)
+                self.request.send(responce)
             print("Connection lost:", self.client_address)
             self.request.close()
 

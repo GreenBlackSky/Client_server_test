@@ -1,6 +1,6 @@
 """Text User Interface."""
 
-from netrequest import Request
+from request import Request
 
 
 class TUI:
@@ -162,7 +162,7 @@ class TUI:
 # Output methods
 
     def show_result(self, result):
-        """Show user answer from server."""
+        """Show user responce from server."""
         self._result_retrievers[result.request_type](result)
 
     def _say_name(self, result):

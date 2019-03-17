@@ -1,7 +1,7 @@
 """Module contains ServerCore class."""
 
 from random import randint
-from netrequest import Request, Answer
+from request import Request, Responce
 
 
 class ServerCore:
@@ -59,7 +59,7 @@ class ServerCore:
             }
 
         def process_request(self, request):
-            """Process request from client and return answer."""
+            """Process request from client and return responce."""
             self._operation_count = \
                 (self._operation_count + 1)%self._save_frequency
             if self._operation_count == 0:
@@ -72,11 +72,11 @@ class ServerCore:
                 elif request_type in self._util_request_handlers:
                     return self._util_request_handlers[request_type](data)
             except ServerCore.NoSuchItem:
-                return Answer(request_type,
+                return Responce(request_type,
                             success=False,
                             message="Not such item: " + data)
             except ServerCore.NoUserLoggedIn:
-                return Answer(request_type,
+                return Responce(request_type,
                             success=False,
                             message="Not logged in")
 
@@ -90,14 +90,14 @@ class ServerCore:
 
         def _handle_get_request(self, request_type):
             self._check_user()
-            return Answer(request_type,
+            return Responce(request_type,
                         data=self._get_requset_handlers[request_type]())
 
         def _ping(self, _):
-            return Answer(Request.Type.PING)
+            return Responce(Request.Type.PING)
 
         def _user_exists(self, user_name):
-            return Answer(Request.Type.USER_EXISTS,
+            return Responce(Request.Type.USER_EXISTS,
                         data=(user_name in self._users))
 
         def _log_in(self, user_name):
@@ -105,18 +105,18 @@ class ServerCore:
             self._user = self._users[user_name]
             self._user.credits += randint(self._new_credits_min,
                                         self._new_credits_max)
-            return Answer(Request.Type.LOG_IN)
+            return Responce(Request.Type.LOG_IN)
 
         def _log_out(self, _):
             request_type = Request.Type.LOG_OUT
             self._check_user()
             self._user = None
             self._users.commit()
-            return Answer(request_type)
+            return Responce(request_type)
 
         def _get_all_items(self, _):
             request_type = Request.Type.GET_ALL_ITEMS
-            return Answer(request_type, data=self._items.values())
+            return Responce(request_type, data=self._items.values())
 
         def _buy_item(self, item_name):
             request_type = Request.Type.PURCHASE_ITEM
@@ -126,9 +126,9 @@ class ServerCore:
             if item.buying_price <= self._user.credits:
                 self._user.credits -= item.buying_price
                 self._user.items.append(item)
-                ret = Answer(request_type, message="Item bought: " + item_name)
+                ret = Responce(request_type, message="Item bought: " + item_name)
             else:
-                ret = Answer(request_type,
+                ret = Responce(request_type,
                             success=False,
                             message="Not enough money")
             self._operation_count += 1
@@ -142,9 +142,9 @@ class ServerCore:
             if item in self._user.items:
                 self._user.items.remove(item)
                 self._user.credits += item.selling_price
-                ret = Answer(request_type, message="Item sold: " + item_name)
+                ret = Responce(request_type, message="Item sold: " + item_name)
             else:
-                ret = Answer(request_type,
+                ret = Responce(request_type,
                             success=False,
                             message="No such item")
             self._operation_count += 1
