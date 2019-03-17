@@ -125,7 +125,12 @@ class TUI:
         """Get user name.
 
         May rise SystemExit exception."""
-        return self._get_input("Enter your login:")
+        while True:
+            ret = self._get_input("Enter your login:")
+            if ret:
+                return ret
+            else:
+                print("Empty login")
 
     def confirm_user_name(self, user_name):
         """Ask user to confirm user name.
