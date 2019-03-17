@@ -53,29 +53,44 @@ class ServerCore:
                                 message="Not logged in")
 
         def _log_in(self, user_name):
+            if self._parent.user_is_activated(user_name):
+                return Responce(Request.Type.LOG_IN,
+                                success=False,
+                                message="User already online")
             self._parent.users.check_and_add_user(user_name)
             self._user = self._parent.users[user_name]
             self._user.credits += self._parent.get_init_credits()
+            self._parent.activate_user(user_name)
             return Responce(Request.Type.LOG_IN)
 
         def _log_out(self):
             request_type = Request.Type.LOG_OUT
             if not self._user:
                 raise ServerCore.NoUserLoggedIn
+            self._parent.deactivate_user(self._user.name)
             self._user = None
             self._parent.users.commit()
             return Responce(request_type)
 
+        def deactivate_user(self):
+            self._parent.deactivate_user(self._user.name)
+
     def __init__(self, items_db, users_db,
-                       min_limit, max_limit,
-                       save_frequency):
+                 min_limit, max_limit,
+                 save_frequency,
+                 simultanious_log_ins):
         """Create ServerCore."""
         self._items = items_db
         self._users = users_db
+
         self._new_credits_max = max_limit
         self._new_credits_min = min_limit
+
         self._save_frequency = save_frequency
         self._operation_count = 1
+
+        self._simultanious_log_ins = simultanious_log_ins
+        self._active_users_names = set()
 
         self._request_handlers = {
             Request.Type.PING: self._ping,
@@ -103,11 +118,35 @@ class ServerCore:
         """Get users data base."""
         return self._users
 
+    def activate_user(self, user_name):
+        """Mark user by given name as active.
+
+        Works only if simultanious_log_ins is set to False.
+        """
+        if not self._simultanious_log_ins:
+            self._active_users_names.add(user_name)
+
+    def user_is_activated(self, user_name):
+        """Check if user by given name is marked as active.
+
+        Works only if simultanious_log_ins is set to False.
+        """
+        return not self._simultanious_log_ins and \
+            user_name in self._active_users_names
+
+    def deactivate_user(self, user_name):
+        """Mark user by given name as inactive.
+
+        Works only if simultanious_log_ins is set to False.
+        """
+        if not self._simultanious_log_ins:
+            self._active_users_names.remove(user_name)
+
     def get_init_credits(self):
         """Get random sum of credits for user initialization."""
         return randint(self._new_credits_min, self._new_credits_max)
 
-    def get_core(self):
+    def get_handler(self):
         """Get handler for new client."""
         return self._Handler(self)
 

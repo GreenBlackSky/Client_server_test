@@ -109,9 +109,13 @@ class ClientCore:
             self._state = ClientCore._State.ASKING_NAME
 
     def _log_in(self):
-        # server
-        self._server.execute(Request.Type.LOG_IN, self._user_name)
-        self._state = ClientCore._State.GETTING_COMMAND
+        # both
+        responce = self._server.execute(Request.Type.LOG_IN, self._user_name)
+        self._ui.show_result(responce)
+        if responce.success:
+            self._state = ClientCore._State.GETTING_COMMAND
+        else:
+            self._state = ClientCore._State.ASKING_NAME
 
     def _get_command(self):
         # user

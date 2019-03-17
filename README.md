@@ -30,6 +30,7 @@ Server config must contain following fields:
 * `items_db_path` - relative path to data base with items from project root
 * `users_db_path` - relative path to data base with users from project root
 * `save_frequency` - frequency of commits to users data base. (In turms of buy/sell operations.)
+* `simultanious_log_ins` - flag, which allows different clients simultaniously log in into one user. To forbid such behaviour, one must set it to empty string.
 
 By default both databases are stored in `{prj}\server\data`
 
@@ -45,10 +46,12 @@ By default both databases are stored in `{prj}\server\data`
 * Tui - text user interface. Class passes messages from user to ClientCore and vice-versa.
 * ClientCore class contains all client-side logic.
 * ServerHandler is TCP based bridge between ClientCore and server.
+
 #### Server-side
 * ClientHandler class handles connections with clients. TCP-based.
 * ServerCore class contains server-side logic. It creates new handler foe each new client connection. Handler takes requests from ClientHandler, processes them and responce with answers. All Handlers share users and items data bases.
 * ItemsDB and UsersDB handles data bases with items and users respectively. Both JSON-based.
+
 #### Shared
 * Request and Responce classes are used to pass information between client and server.
 * ConfigHandler is used to open, parse and check configuration.
@@ -56,3 +59,7 @@ By default both databases are stored in `{prj}\server\data`
 
 Although, these components are quite naive, they are designed to be replaceble. Query-handling in ClientHandler can be improved by using Celery.
 JSON as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.
+
+## Path of request
+User asks client app to do something via UI. `TUI` in this case. `TUI` triggers some methods in `ClientCore` mechanism directly, or generates `Request` object and passes in to `ClientCore`. `ClientCore` passes request to `ServerHandler`. `ServerHandler` passes it to server app using network. In server app `ClientHandler` gets the request. It has its own instance of `ServerCore._Handler`. Though `ServerCore` contains all server logic inside itself, it generates handlers to deal with multile clients simulteniously. `_Handler` process the request, using `ServerCore` methods and data bases. It generates `Responce`, which contains result of request execution.
+Then `Responce` makes the same way backwards to User.

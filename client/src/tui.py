@@ -38,6 +38,7 @@ class TUI:
         """Create TUI instance."""
         self._last_item = None
         self._result_retrievers = {
+            Request.Type.LOG_IN: self._show_log_in_result,
             Request.Type.GET_CREDITS: self._show_credits,
             Request.Type.GET_MY_ITEMS: self._print_list,
             Request.Type.GET_ALL_ITEMS: self._print_list,
@@ -169,6 +170,12 @@ class TUI:
     def show_result(self, result):
         """Show user responce from server."""
         self._result_retrievers[result.request_type](result)
+
+    def _show_log_in_result(self, result):
+        if result.success:
+            print("User logged in")
+        else:
+            print(result.message)
 
     def _say_name(self, result):
         if result.success:

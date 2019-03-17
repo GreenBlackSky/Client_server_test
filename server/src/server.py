@@ -15,6 +15,7 @@ def run():
         "max_init_credits": int,
         "min_init_credits": int,
         "save_frequency": int,
+        "simultanious_log_ins": bool,
         "items_db_path": str,
         "users_db_path": str
     }
@@ -43,7 +44,8 @@ def run():
     server_core = ServerCore(items_db, users_db,
                              config["min_init_credits"],
                              config["max_init_credits"],
-                             config["save_frequency"])
+                             config["save_frequency"],
+                             config["simultanious_log_ins"])
     ClientHandler(config["port"], server_core).exec()
 
 if __name__ == "__main__":
