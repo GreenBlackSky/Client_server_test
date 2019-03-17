@@ -56,6 +56,10 @@ class UsersDB:
         """
         self._users[user_name] = self._users.get(user_name, User(user_name))
 
+    def keys(self):
+        """Get all users names in data base as a list."""
+        return list(self._users.keys())
+
     def commit(self):
         """Commit changes into data base."""
         db = list()

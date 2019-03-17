@@ -27,18 +27,10 @@ class ServerHandler:
         self._socket.settimeout(self._timeout)
 
     def _send_request(self, request_type, data=None):
-        """Send request to server.
-
-        Raises an exception if connection lost.
-        """
         request = Request(request_type, data)
         self._socket.sendall(dumps(request))
 
     def _get_responce(self):
-        """Get responce from server.
-
-        Raises an exception if connection lost.
-        """
         return loads(self._socket.recv(1024))
 
     def execute(self, request_type, arg=None):

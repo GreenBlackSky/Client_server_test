@@ -14,6 +14,7 @@ class TUI:
 
     _commands = {
         "name": Request.Type.GET_NAME,
+        "users": Request.Type.GET_ALL_USERS,
         "credits": Request.Type.GET_CREDITS,
         "items": Request.Type.GET_MY_ITEMS,
         "market": Request.Type.GET_ALL_ITEMS,
@@ -23,6 +24,7 @@ class TUI:
     }
 
     _commands_descriptions = {
+        Request.Type.GET_ALL_USERS: "show list of all users",
         Request.Type.GET_NAME: "show name of current user",
         Request.Type.GET_CREDITS: "show credits you have",
         Request.Type.GET_MY_ITEMS: "show items you have",
@@ -44,7 +46,8 @@ class TUI:
             Request.Type.GET_ALL_ITEMS: self._print_list,
             Request.Type.PURCHASE_ITEM: self._show_deal_result,
             Request.Type.SELL_ITEM: self._show_deal_result,
-            Request.Type.GET_NAME: self._say_name
+            Request.Type.GET_NAME: self._say_name,
+            Request.Type.GET_ALL_USERS: self._print_list
         }
 
     def _get_input(self, prompt):
@@ -201,3 +204,6 @@ class TUI:
         else:
             print("Operation Failed.")
         print(result.message)
+
+# TODO help for each command
+# TODO malipulate users from admin account

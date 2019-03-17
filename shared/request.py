@@ -11,14 +11,15 @@ class Request:
 
         PING = 0
         USER_EXISTS = 1
-        LOG_IN = 2
-        GET_NAME = 3
-        GET_CREDITS = 4
-        GET_MY_ITEMS = 5
-        GET_ALL_ITEMS = 6
-        PURCHASE_ITEM = 7
-        SELL_ITEM = 8
-        LOG_OUT = 9
+        GET_ALL_USERS = 2
+        LOG_IN = 3
+        GET_NAME = 4
+        GET_CREDITS = 5
+        GET_MY_ITEMS = 6
+        GET_ALL_ITEMS = 7
+        PURCHASE_ITEM = 8
+        SELL_ITEM = 9
+        LOG_OUT = 10
 
     def __init__(self, request_type, data=None):
         """Create new request."""

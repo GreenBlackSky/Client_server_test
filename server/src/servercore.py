@@ -94,6 +94,7 @@ class ServerCore:
 
         self._request_handlers = {
             Request.Type.PING: self._ping,
+            Request.Type.GET_ALL_USERS: self._get_all_users,            
             Request.Type.USER_EXISTS: self._user_exists,
             Request.Type.GET_ALL_ITEMS: self._get_all_items,
             Request.Type.GET_NAME: self._get_user_name,
@@ -158,6 +159,10 @@ class ServerCore:
             self._users.commit()
         return self._request_handlers[request.request_type](user, request.data)
 
+    def _get_all_users(self, *_):
+        request_type = Request.Type.GET_ALL_USERS
+        return Responce(request_type, data=self._users.keys())
+
     def _get_all_items(self, *_):
         request_type = Request.Type.GET_ALL_ITEMS
         return Responce(request_type, data=self._items.values())
@@ -212,5 +217,3 @@ class ServerCore:
                             message="No such item")
         self._operation_count += 1
         return ret
-
-# TODO add users command to list all users
