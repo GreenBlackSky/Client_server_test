@@ -144,3 +144,5 @@ class ClientCore:
             self._state = ClientCore._State.ASKING_NAME
         else:
             self._state = ClientCore._State.GETTING_COMMAND
+
+# TODO add "users" call when logging in

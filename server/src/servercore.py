@@ -11,21 +11,6 @@ class ServerCore:
     passed to ServerCore itself.
     """
 
-    class NoUserLoggedIn(Exception):
-        """Exception to rise when there is no user logged in.
-
-        Rises when logged in user is required to process request.
-        """
-
-        pass
-
-
-    class NoSuchItem(Exception):
-        """Exception to rise when no item found by given name."""
-
-        pass
-
-
     class _Handler:
         """Class handles clients."""
 
@@ -36,21 +21,12 @@ class ServerCore:
         def process_request(self, request):
             """Process request from client and return responce."""
             request_type, data = request.request_type, request.data
-            try:
-                if request_type is Request.Type.LOG_IN:
-                    return self._log_in(data)
-                elif request_type is Request.Type.LOG_OUT:
-                    return self._log_out()
-                else:
-                    return self._parent.handle_request_from(self._user, request)
-            except ServerCore.NoSuchItem:
-                return Responce(request_type,
-                                success=False,
-                                message="Not such item: " + data)
-            except ServerCore.NoUserLoggedIn:
-                return Responce(request_type,
-                                success=False,
-                                message="Not logged in")
+            if request_type is Request.Type.LOG_IN:
+                return self._log_in(data)
+            elif request_type is Request.Type.LOG_OUT:
+                return self._log_out()
+            else:
+                return self._parent.handle_request_from(self._user, request)
 
         def _log_in(self, user_name):
             if self._parent.user_is_activated(user_name):
@@ -73,7 +49,8 @@ class ServerCore:
             return Responce(request_type)
 
         def deactivate_user(self):
-            self._parent.deactivate_user(self._user.name)
+            if self._user:
+                self._parent.deactivate_user(self._user.name)
 
     def __init__(self, items_db, users_db,
                  min_limit, max_limit,
@@ -105,14 +82,16 @@ class ServerCore:
         }
 
     @staticmethod
-    def _check_user(user):
-        if not user:
-            raise ServerCore.NoUserLoggedIn
+    def _no_user_responce(request_type):
+        return Responce(request_type,
+                        success=False,
+                        message="Not logged in")
 
-    def _check_item(self, item_name):
-        """Check if item with given name is exists."""
-        if item_name not in self._items:
-            raise ServerCore.NoSuchItem
+    @staticmethod
+    def _no_item_responce(request_type, item_name):
+        return Responce(request_type,
+                        success=False,
+                        message="Not such item: " + item_name)
 
     @property
     def users(self):
@@ -175,21 +154,26 @@ class ServerCore:
                         data=(user_name in self._users))
 
     def _get_user_name(self, user, _):
-        self._check_user(user)
+        if not user:
+            return self._no_user_responce(Requets.Type.GET_NAME)
         return Responce(Request.Type.GET_NAME, data=user.name)
 
     def _get_user_credits(self, user, _):
-        self._check_user(user)
+        if not user:
+            return self._no_user_responce(Requets.Type.GET_CREDITS)
         return Responce(Request.Type.GET_CREDITS, data=user.credits)
 
     def _get_user_items(self, user, _):
-        self._check_user(user)
+        if not user:
+            return self._no_user_responce(Requets.Type.GET_MY_ITEMS)
         return Responce(Request.Type.GET_MY_ITEMS, data=user.items)
 
     def _buy_item(self, user, item_name):
         request_type = Request.Type.PURCHASE_ITEM
-        self._check_user(user)
-        self._check_item(item_name)
+        if not user:
+            return self._no_user_responce(request_type)
+        if item_name not in self._items:
+            return self._no_item_responce(request_type, item_name)
         item = self._items[item_name]
         if item.buying_price <= user.credits:
             user.credits -= item.buying_price
@@ -197,15 +181,17 @@ class ServerCore:
             ret = Responce(request_type, message="Item bought: " + item_name)
         else:
             ret = Responce(request_type,
-                            success=False,
-                            message="Not enough money")
+                           success=False,
+                           message="Not enough money")
         self._operation_count += 1
         return ret
 
     def _sell_item(self, user, item_name):
         request_type = Request.Type.SELL_ITEM
-        self._check_user(user)
-        self._check_item(item_name)
+        if not user:
+            return self._no_user_responce(request_type)
+        if item_name not in self._items:
+            return self._no_item_responce(request_type, item_name)
         item = self._items[item_name]
         if item in user.items:
             user.items.remove(item)
@@ -213,7 +199,7 @@ class ServerCore:
             ret = Responce(request_type, message="Item sold: " + item_name)
         else:
             ret = Responce(request_type,
-                            success=False,
-                            message="No such item")
+                           success=False,
+                           message="You don't have " + item_name)
         self._operation_count += 1
         return ret
