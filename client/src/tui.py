@@ -150,21 +150,19 @@ class TUI:
 
         May rise SystemExit exception."""
         while True:
-            ret = self._get_input("Enter your login:")
-            if not ret:
+            user_name = self._get_input("Enter your login:")
+            if not user_name:
                 print("Empty login")
-            elif ret == "users":
+            elif user_name == "users":
                 responce = self._server.execute(Request.Type.GET_ALL_USERS)
                 self._print_list(responce)
             else:
-                return ret
-
-    def confirm_user_name(self, user_name):
-        """Ask user to confirm user name.
-
-        May rise SystemExit exception."""
-        print("No user with name:", user_name)
-        return self._confirm_action("Create new user?")
+                responce = self._server.execute(Request.Type.USER_EXISTS, user_name)
+                if responce.data or \
+                     self._confirm_action("No user with name: " + \
+                                          user_name + \
+                                          "\nCreate new user?"):
+                    return user_name
 
     def get_command(self):
         """Get command from user.

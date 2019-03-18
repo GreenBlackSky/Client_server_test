@@ -19,14 +19,12 @@ class ClientCore:
         CONNECTING = 0
         ASKING_RECONNECT = 1
         ASKING_NAME = 2
-        CHECKING_NAME = 3
-        CONFIRMING_NAME = 4
-        LOGGINIG_IN = 5
-        GETTING_COMMAND = 6
-        EXECUTING_COMMAND = 7
-        RETRIEVING_RESULT = 8
-        LOGGINIG_OUT = 9
-        DISCONNECTING = 10
+        LOGGINIG_IN = 3
+        GETTING_COMMAND = 4
+        EXECUTING_COMMAND = 5
+        RETRIEVING_RESULT = 6
+        LOGGINIG_OUT = 7
+        DISCONNECTING = 8
 
     def __init__(self, server, ui):
         """Create new ClientCore object.
@@ -44,8 +42,6 @@ class ClientCore:
             ClientCore._State.CONNECTING: self._connect,
             ClientCore._State.ASKING_RECONNECT: self._ask_reconnect,
             ClientCore._State.ASKING_NAME: self._ask_name,
-            ClientCore._State.CHECKING_NAME: self._check_user_name,
-            ClientCore._State.CONFIRMING_NAME: self._confirm_user_name,
             ClientCore._State.LOGGINIG_IN: self._log_in,
             ClientCore._State.GETTING_COMMAND: self._get_command,
             ClientCore._State.EXECUTING_COMMAND: self._execute_command,
@@ -90,24 +86,7 @@ class ClientCore:
     def _ask_name(self):
         # user
         self._user_name = self._ui.ask_user_name()
-        self._state = ClientCore._State.CHECKING_NAME
-
-    def _check_user_name(self):
-        # server
-        responce = self._server.execute(Request.Type.USER_EXISTS,
-                                      self._user_name)
-        if not responce.data:
-            self._state = ClientCore._State.CONFIRMING_NAME
-        else:
-            self._state = ClientCore._State.LOGGINIG_IN
-
-    def _confirm_user_name(self):
-        # user
-        confirm = self._ui.confirm_user_name(self._user_name)
-        if confirm:
-            self._state = ClientCore._State.LOGGINIG_IN
-        else:
-            self._state = ClientCore._State.ASKING_NAME
+        self._state = ClientCore._State.LOGGINIG_IN
 
     def _log_in(self):
         # both
