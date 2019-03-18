@@ -34,6 +34,7 @@ class ClientCore:
         Gets network handler and ui handler.
         """
         self._server, self._ui = server, ui
+        self._ui.set_server(self._server)
         self._state = ClientCore._State.CONNECTING
         self._user_name = None
         self._last_command = None
@@ -144,5 +145,3 @@ class ClientCore:
             self._state = ClientCore._State.ASKING_NAME
         else:
             self._state = ClientCore._State.GETTING_COMMAND
-
-# TODO add "users" call when logging in

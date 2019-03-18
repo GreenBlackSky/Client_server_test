@@ -39,9 +39,10 @@ class TUI:
     def __init__(self):
         """Create TUI instance."""
         self._last_item = None
+        self._server = None
         self._result_retrievers = {
             Request.Type.LOG_IN: self._show_log_in_result,
-            Request.Type.GET_CREDITS: self._show_credits,
+            Request.Type.GET_CREDITS: self._show_account,
             Request.Type.GET_MY_ITEMS: self._print_list,
             Request.Type.GET_ALL_ITEMS: self._print_list,
             Request.Type.PURCHASE_ITEM: self._show_deal_result,
@@ -50,13 +51,20 @@ class TUI:
             Request.Type.GET_ALL_USERS: self._print_list
         }
 
+    def set_server(self, server):
+        """Set server.
+
+        Any object with link to actual server will do.
+        """
+        self._server = server
+
     def _get_input(self, prompt):
         while True:
             user_input = input(prompt + "\n")
             if user_input == 'quit':
                 self._confirm_exit()
-            elif user_input == 'help':
-                self._help()
+            elif user_input.startswith('help'):
+                self._help(user_input.replace("help", "", 1).strip())
             else:
                 return user_input
 
@@ -85,13 +93,25 @@ class TUI:
             else:
                 print("Unexpected input. Print help for help.")
 
-    def _help(self):
-        print("Tips:")
-        for command_name, command in self._commands.items():
-            description = self._commands_descriptions[command]
-            print("{}\t{}".format(command_name, description))
-        print("help")
-        print("quit")
+    def _help(self, command=None):
+        if command:
+            if command in self._commands:
+                request_type = self._commands[command]
+                description = self._commands_descriptions[request_type]
+                print(command + ": " + description)
+            elif command == "help":
+                print("help\tprint tips or command help. Usage: help [<command>]")
+            elif command == "quit":
+                print(command + ": Exit game")
+            else:
+                print(command + ": unknown command")
+        else:
+            print("Tips:")
+            for command_name, command in self._commands.items():
+                description = self._commands_descriptions[command]
+                print("{}\t{}".format(command_name, description))
+            print("help\tprint tips or command help. Usage: help [<command>]")
+            print("quit")
 
     @property
     def last_item(self):
@@ -131,10 +151,13 @@ class TUI:
         May rise SystemExit exception."""
         while True:
             ret = self._get_input("Enter your login:")
-            if ret:
-                return ret
-            else:
+            if not ret:
                 print("Empty login")
+            elif ret == "users":
+                responce = self._server.execute(Request.Type.GET_ALL_USERS)
+                self._print_list(responce)
+            else:
+                return ret
 
     def confirm_user_name(self, user_name):
         """Ask user to confirm user name.
@@ -170,40 +193,41 @@ class TUI:
 
 # Output methods
 
-    def show_result(self, result):
+    def show_result(self, responce):
         """Show user responce from server."""
-        self._result_retrievers[result.request_type](result)
+        self._result_retrievers[responce.request_type](responce)
 
-    def _show_log_in_result(self, result):
-        if result.success:
+    def _show_log_in_result(self, responce):
+        if responce.success:
             print("User logged in")
         else:
-            print(result.message)
+            print(responce.message)
 
-    def _say_name(self, result):
-        if result.success:
-            print(result.data)
+    def _say_name(self, responce):
+        if responce.success:
+            print(responce.data)
         else:
-            print(result.message)
+            print(responce.message)
 
-    def _show_credits(self, result):
-        print("Your account:", result.data)
-
-    def _print_list(self, result):
-        if not result.success:
-            print(result.message)
-        elif not result.data:
-            print("Empty")
+    def _show_account(self, responce):
+        if responce.success:
+            print("Your account:", responce.data)
         else:
-            for item in result.data:
-                print(item)
+            print(responce.message)
 
-    def _show_deal_result(self, result):
-        if result.success:
+    def _show_deal_result(self, responce):
+        if responce.success:
             print("Success!")
         else:
-            print("Operation Failed.")
-        print(result.message)
+            print(responce.message)
+        
+    def _print_list(self, responce):
+        if not responce.success:
+            print(responce.message)
+        elif not responce.data:
+            print("Empty")
+        else:
+            for item in responce.data:
+                print(item)
 
-# TODO help for each command
 # TODO malipulate users from admin account

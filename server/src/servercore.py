@@ -121,6 +121,8 @@ class ServerCore:
         """
         if not self._simultanious_log_ins:
             self._active_users_names.remove(user_name)
+        self._users.commit()
+
 
     def get_init_credits(self):
         """Get random sum of credits for user initialization."""
