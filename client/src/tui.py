@@ -123,7 +123,7 @@ class TUI:
     def greet(self):
         """Print welcome messange."""
         print("Welcome!")
-        self._help()
+        self._help()        
 
     def say_wait_for_connection(self):
         """Print message about establishing connection."""
@@ -172,9 +172,8 @@ class TUI:
             user_input = self._get_input("Enter command:")
 
             new_item = None
-            if len(user_input.split()) >= 2:
-                user_input, *new_item = user_input.split()
-                new_item = " ".join(new_item)
+            if user_input.count(" ") >= 1:
+                user_input, new_item = user_input.split(" ", 1)
 
             if user_input not in self._commands:
                 print("Unexpected input. Print help for help.")
@@ -198,6 +197,9 @@ class TUI:
     def _show_log_in_result(self, responce):
         if responce.success:
             print("User logged in")
+            responce = self._server.execute(Request.Type.GET_CREDITS)
+            print("You have", responce.data, "credits")
+
         else:
             print(responce.message)
 
@@ -228,4 +230,5 @@ class TUI:
             for item in responce.data:
                 print(item)
 
-# TODO malipulate users from admin account
+# TODO manipulate users from admin account
+# TODO ask confirmation for buying and selling

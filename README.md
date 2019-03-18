@@ -16,7 +16,7 @@ Simple net server app. It is used to handle connection with client, provide it w
 `server.py` is executable for server.
 
 ## Config
-Both client and server must be provided with path to config. Path must be rative from project root. If it is not, application will search for config in default location, which is `{prj}\client\cfg\client_config.json` for client and `{prj}\server\cfg\server_config.json` for server. Config file is in JSON format.
+Both client and server must be provided with path to config. Path must be relative from project root. If it is not, application will search for config in default location, which are `{prj}\client\cfg\client_config.json` and `{prj}\server\cfg\server_config.json` for client and for server respectively. Config file is in JSON format.
 
 Client config must contain following fields:
 * `host` - ip adress of game server
@@ -43,21 +43,22 @@ By default both databases are stored in `{prj}\server\data`
 
 ## Components
 #### Client-side
-* Tui - text user interface. Class passes messages from user to ClientCore and vice-versa.
-* ClientCore class contains all client-side logic.
-* ServerHandler is TCP based bridge between ClientCore and server.
+* `Tui` - text user interface. Class passes messages from user to `ClientCore` and vice-versa. It can also interract directly with `ServerHandler`, without changing clients state. But this direct interration MUST be used only for retrieving information.
+* `ClientCore` class contains all client-side logic.
+* `ServerHandler` is TCP based bridge between `ClientCore` and server.
 
 #### Server-side
-* ClientHandler class handles connections with clients. TCP-based.
-* ServerCore class contains server-side logic. It creates new handler foe each new client connection. Handler takes requests from ClientHandler, processes them and responce with answers. All Handlers share users and items data bases.
-* ItemsDB and UsersDB handles data bases with items and users respectively. Both JSON-based.
+* `ClientHandler` class handles connections with clients. TCP-based.
+* `ServerCore` class contains server-side logic. It creates new handler foe each new client connection. Handler takes requests from `ClientHandler`, processes them and responce with answers. All Handlers share users and items data bases.
+* `ItemsDB` and `UsersDB` handles data bases with items and users respectively. Both JSON-based. `UserDB` rewrites whole JSON-file on commit, which is sad. But JSON was never intended to be used in huge scaled data bases and here serves just as an example. In more serious project one would replace `UserDB` with some SQL or NoSQL data base handler, like Sqlite or PostgreSQL. 
 
 #### Shared
-* Request and Responce classes are used to pass information between client and server.
-* ConfigHandler is used to open, parse and check configuration.
-* User and Item classes represent user and item =).
+* `Request` and `Responce` classes are used to pass information between client and server.
+* `ConfigHandler` is used to open, parse and check configuration.
+* `User` and `Item` classes represent user and item =).
+* `addshared` module contains method `get_abs_path`, which gets absolute path to project directory. On include it modifyes local `PYTHONPATH` (for this run of project) by including `shared` directory.
 
-Although, these components are quite naive, they are designed to be replaceble. Query-handling in ClientHandler can be improved by using Celery.
+Although, these components are quite naive, they are designed to be replaceble. Query-handling in `ServerCore` can be improved by using Celery.
 JSON as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.
 
 ## Path of request
