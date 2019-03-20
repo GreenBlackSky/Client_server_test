@@ -20,17 +20,6 @@ def decode_item(data):
                     data["buy"],
                     data["sell"])
 
-# def encode_item(item):
-#     if not isinstance(item, Item):
-#         type_name = z.__class__.__name__
-#         raise TypeError("{} is not JSON serializable".format(type_name))
-#     return {
-#         "type": "Item",
-#         "name": item.name,
-#         "buy": item.buying_price,
-#         "sell": item.selling_price
-#     }
-
 class ItemsDB:
     """Class handles JSON-based data base with items."""
 

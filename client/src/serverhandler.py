@@ -31,7 +31,10 @@ class ServerHandler:
         self._socket.sendall(dumps(request))
 
     def _get_responce(self):
-        return loads(self._socket.recv(1024))
+        try:
+            return loads(self._socket.recv(1024))
+        except:
+            raise ConnectionError
 
     def execute(self, request_type, arg=None):
         """Send request and get responce from server.

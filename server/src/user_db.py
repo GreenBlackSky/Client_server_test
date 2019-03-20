@@ -9,16 +9,6 @@ from item import Item
 from item_db import decode_item
 from user import User
 
-# def decode_user(data):
-#     if "name" in data and \
-#             "credits" in data and \
-#                 "items" in data:
-#         items = map(decode_item, data["items"])
-#         ret = User(data["name"])
-#         ret.credits = data["credits"]
-#         ret.items.extend(items)
-#         return ret
-
 
 class UsersDB:
     """Class handles sqlite-based data base with users."""
@@ -28,8 +18,6 @@ class UsersDB:
         self._users = dict()
         self._path = path
         with open(get_abs_path() + path, "r") as stream:
-            # users = load(stream, object_hook=decode_user)
-            # self._users = {user.name: user for user in users}
             users = load(stream)
             for user_conf in users:
                 user = User(user_conf["name"])
@@ -46,15 +34,13 @@ class UsersDB:
         return (user_name in self._users)
 
     def __getitem__(self, user_name):
-        """Get user with given name."""
-        return self._users[user_name]
-
-    def check_and_add_user(self, user_name):
-        """Add new user with given name to db.
-
-        If user already exists, do nothing.
+        """Get user with given name.
+        
+        If no user under such name exists, create one.
         """
-        self._users[user_name] = self._users.get(user_name, User(user_name))
+        if user_name not in self._users:
+            self._users[user_name] = User(user_name)
+        return self._users[user_name]
 
     def keys(self):
         """Get all users names in data base as a list."""

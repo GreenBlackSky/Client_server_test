@@ -33,7 +33,6 @@ class ServerCore:
                 return Responce(Request.Type.LOG_IN,
                                 success=False,
                                 message="User already online")
-            self._parent.users.check_and_add_user(user_name)
             self._user = self._parent.users[user_name]
             self._user.credits += self._parent.get_init_credits()
             self._parent.activate_user(user_name)
