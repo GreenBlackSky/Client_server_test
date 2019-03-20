@@ -167,7 +167,9 @@ class ServerCore:
     def _get_user_items(self, user, _):
         if not user:
             return self._no_user_responce(Requets.Type.GET_MY_ITEMS)
-        return Responce(Request.Type.GET_MY_ITEMS, data=user.items)
+        ret = ["{}: {}".format(name, quantity) \
+            for name, quantity in user.items.items()]
+        return Responce(Request.Type.GET_MY_ITEMS, data=ret)
 
     def _buy_item(self, user, item_name):
         request_type = Request.Type.PURCHASE_ITEM
@@ -178,7 +180,7 @@ class ServerCore:
         item = self._items[item_name]
         if item.buying_price <= user.credits:
             user.credits -= item.buying_price
-            user.items.append(item)
+            user.items[item_name] = user.items.get(item_name, 0) + 1
             ret = Responce(request_type, message="Item bought: " + item_name)
         else:
             ret = Responce(request_type,
@@ -194,8 +196,10 @@ class ServerCore:
         if item_name not in self._items:
             return self._no_item_responce(request_type, item_name)
         item = self._items[item_name]
-        if item in user.items:
-            user.items.remove(item)
+        if item_name in user.items:
+            user.items[item_name] -= 1
+            if user.items[item_name] == 0:
+                user.items.pop(item_name)
             user.credits += item.selling_price
             ret = Responce(request_type, message="Item sold: " + item_name)
         else:
@@ -204,3 +208,5 @@ class ServerCore:
                            message="You don't have " + item_name)
         self._operation_count += 1
         return ret
+
+# TODO buy number of items

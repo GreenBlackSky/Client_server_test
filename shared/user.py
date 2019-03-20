@@ -8,7 +8,7 @@ class User:
         """Create new user."""
         self._name = name
         self._credits = 0
-        self._items = list()
+        self._items = dict()
 
     @property
     def name(self):
@@ -34,4 +34,7 @@ class User:
 
         Contains new lines.
         """
-        return self.name + "\n" + [str(item) + "\n" for item in self.items]
+        return "Name: {}\nCredits: {}\nItems:{}\n".format(
+            self.name, self.credits,
+            ["{}: {}\n".format(name, quantity) \
+                for item, quantity in self.items.items()])

@@ -11,7 +11,7 @@ from user import User
 
 
 class UsersDB:
-    """Class handles sqlite-based data base with users."""
+    """Class handles JSON-based data base with users."""
 
     def __init__(self, path):
         """Open connection with data base with users."""
@@ -22,12 +22,9 @@ class UsersDB:
             for user_conf in users:
                 user = User(user_conf["name"])
                 user.credits = user_conf["credits"]
-                for item_conf in user_conf["items"]:
-                    item = Item(item_conf["name"],
-                                item_conf["buy"],
-                                item_conf["sell"])
-                    user.items.append(item)
-                self._users[user.name] = user            
+                for item in user_conf["items"]:
+                    user.items[item] = user.items.get(item, 0) + 1
+                self._users[user.name] = user  
 
     def __contains__(self, user_name):
         """Check if db contains user with given name."""
@@ -53,15 +50,8 @@ class UsersDB:
             user_data = {
                 "name": user.name,
                 "credits": user.credits,
-                "items": list()
+                "items": user.items
             }
-            for item in user.items:
-                item_data = {
-                    "name": item.name,
-                    "buy": item.buying_price,
-                    "sell": item.selling_price
-                }
-                user_data["items"].append(item_data)
             db.append(user_data)
 
         with open(get_abs_path() + self._path, "w") as stream:

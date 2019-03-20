@@ -12,7 +12,10 @@ class Item:
 
     @property
     def name(self):
-        """Name of item."""
+        """Name of item.
+        
+        Must be unique.
+        """
         return self._name
 
     @property

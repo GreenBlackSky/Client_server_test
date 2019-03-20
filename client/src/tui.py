@@ -232,3 +232,5 @@ class TUI:
 
 # TODO manipulate users from admin account
 # TODO ask confirmation for buying and selling
+# TODO add About item command
+
