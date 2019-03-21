@@ -4,6 +4,7 @@ import addshare
 from tui import TUI
 from clientcore import ClientCore
 from serverhandler import ServerHandler
+from proxy import Proxy
 from confighandler import open_config, transform_config
 
 
@@ -18,7 +19,7 @@ def run():
     if config is None or not transform_config(config, config_must_have):
         return
 
-    ClientCore(ServerHandler(**config), TUI()).exec()
+    ClientCore(Proxy(ServerHandler(**config)), TUI()).exec()
 
 
 if __name__ == "__main__":

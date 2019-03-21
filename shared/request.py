@@ -54,3 +54,5 @@ class Responce(Request):
     def message(self):
         """Get additional info on request."""
         return self._message
+
+# TODO GET_USER instead of GET_NAME, GET_CREDITS and GET_MY_ITEMS

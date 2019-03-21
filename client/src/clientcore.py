@@ -125,5 +125,3 @@ class ClientCore:
         else:
             self._state = ClientCore._State.GETTING_COMMAND
 
-# TODO ask users on connect
-# TODO ask user credits, items and all items on login

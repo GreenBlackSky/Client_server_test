@@ -23,7 +23,7 @@ class UsersDB:
                 user = User(user_conf["name"])
                 user.credits = user_conf["credits"]
                 for item in user_conf["items"]:
-                    user.items[item] = user.items.get(item, 0) + 1
+                    user.items[item] = user_conf["items"][item]
                 self._users[user.name] = user  
 
     def __contains__(self, user_name):
