@@ -156,17 +156,17 @@ class ServerCore:
 
     def _get_user_name(self, user, _):
         if not user:
-            return self._no_user_responce(Requets.Type.GET_NAME)
+            return self._no_user_responce(Request.Type.GET_NAME)
         return Responce(Request.Type.GET_NAME, data=user.name)
 
     def _get_user_credits(self, user, _):
         if not user:
-            return self._no_user_responce(Requets.Type.GET_CREDITS)
+            return self._no_user_responce(Request.Type.GET_CREDITS)
         return Responce(Request.Type.GET_CREDITS, data=user.credits)
 
     def _get_user_items(self, user, _):
         if not user:
-            return self._no_user_responce(Requets.Type.GET_MY_ITEMS)
+            return self._no_user_responce(Request.Type.GET_MY_ITEMS)
         ret = ["{}: {}".format(name, quantity) \
             for name, quantity in user.items.items()]
         return Responce(Request.Type.GET_MY_ITEMS, data=ret)
@@ -210,3 +210,4 @@ class ServerCore:
         return ret
 
 # TODO buy number of items
+# TODO send user items as dict

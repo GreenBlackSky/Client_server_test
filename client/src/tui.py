@@ -13,8 +13,8 @@ class TUI:
     """
 
     _commands = {
-        "name": Request.Type.GET_NAME,
         "users": Request.Type.GET_ALL_USERS,
+        "name": Request.Type.GET_NAME,
         "credits": Request.Type.GET_CREDITS,
         "items": Request.Type.GET_MY_ITEMS,
         "market": Request.Type.GET_ALL_ITEMS,
@@ -41,14 +41,14 @@ class TUI:
         self._last_item = None
         self._server = None
         self._result_retrievers = {
+            Request.Type.GET_ALL_USERS: self._print_list,
             Request.Type.LOG_IN: self._show_log_in_result,
+            Request.Type.GET_NAME: self._say_name,
             Request.Type.GET_CREDITS: self._show_account,
             Request.Type.GET_MY_ITEMS: self._print_list,
             Request.Type.GET_ALL_ITEMS: self._print_list,
             Request.Type.PURCHASE_ITEM: self._show_deal_result,
-            Request.Type.SELL_ITEM: self._show_deal_result,
-            Request.Type.GET_NAME: self._say_name,
-            Request.Type.GET_ALL_USERS: self._print_list
+            Request.Type.SELL_ITEM: self._show_deal_result
         }
 
     def set_server(self, server):
