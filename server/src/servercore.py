@@ -41,7 +41,9 @@ class ServerCore:
         def _log_out(self):
             request_type = Request.Type.LOG_OUT
             if not self._user:
-                raise ServerCore.NoUserLoggedIn
+                return Responce(request_type,
+                        success=False,
+                        message="Not logged in")
             self._parent.deactivate_user(self._user.name)
             self._user = None
             self._parent.users.commit()
