@@ -5,11 +5,11 @@ class Proxy:
     def __init__(self, server):
         self._server = server
         self._cache = {
-            Request.Type.GET_ALL_USERS: None,
+            Request.Type.GET_ALL_USERS_NAMES: None,
             Request.Type.GET_ALL_ITEMS: None,
-            Request.Type.GET_NAME: None,
+            Request.Type.GET_CURRENT_USER_NAME: None,
             Request.Type.GET_CREDITS: None,
-            Request.Type.GET_MY_ITEMS: None
+            Request.Type.GET_USER_ITEMS_NAMES: None
         }
         self._updaters = {
             Request.Type.LOG_IN: self._get_user_info,
@@ -37,24 +37,24 @@ class Proxy:
         return ret
 
     def _get_game_info(self):
-        self._cache[Request.Type.GET_ALL_USERS] = \
-            self._server.execute(Request.Type.GET_ALL_USERS).data
+        self._cache[Request.Type.GET_ALL_USERS_NAMES] = \
+            self._server.execute(Request.Type.GET_ALL_USERS_NAMES).data
         self._cache[Request.Type.GET_ALL_ITEMS] = \
             self._server.execute(Request.Type.GET_ALL_ITEMS).data
 
     def _get_user_info(self):
-        self._cache[Request.Type.GET_NAME] = \
-            self._server.execute(Request.Type.GET_NAME).data
+        self._cache[Request.Type.GET_CURRENT_USER_NAME] = \
+            self._server.execute(Request.Type.GET_CURRENT_USER_NAME).data
         self._cache[Request.Type.GET_CREDITS] = \
             self._server.execute(Request.Type.GET_CREDITS).data
-        self._cache[Request.Type.GET_MY_ITEMS] = \
-            self._server.execute(Request.Type.GET_MY_ITEMS).data
+        self._cache[Request.Type.GET_USER_ITEMS_NAMES] = \
+            self._server.execute(Request.Type.GET_USER_ITEMS_NAMES).data
 
     def _clear_user_info(self):
         for request_type in [
-            Request.Type.GET_NAME,
+            Request.Type.GET_CURRENT_USER_NAME,
             Request.Type.GET_CREDITS,
-            Request.Type.GET_MY_ITEMS
+            Request.Type.GET_USER_ITEMS_NAMES
         ]:
             self._cache[request_type] = None
 

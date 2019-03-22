@@ -11,11 +11,11 @@ class Request:
 
         PING = 0
         USER_EXISTS = 1
-        GET_ALL_USERS = 2
+        GET_ALL_USERS_NAMES = 2
         LOG_IN = 3
-        GET_NAME = 4
+        GET_CURRENT_USER_NAME = 4
         GET_CREDITS = 5
-        GET_MY_ITEMS = 6
+        GET_USER_ITEMS_NAMES = 6
         GET_ALL_ITEMS = 7
         PURCHASE_ITEM = 8
         SELL_ITEM = 9
@@ -55,4 +55,4 @@ class Responce(Request):
         """Get additional info on request."""
         return self._message
 
-# TODO GET_USER instead of GET_NAME, GET_CREDITS and GET_MY_ITEMS
+# TODO GET_USER instead of GET_CURRENT_USER_NAME, GET_CREDITS and GET_USER_ITEMS_NAMES

@@ -72,12 +72,12 @@ class ServerCore:
 
         self._request_handlers = {
             Request.Type.PING: self._ping,
-            Request.Type.GET_ALL_USERS: self._get_all_users,            
+            Request.Type.GET_ALL_USERS_NAMES: self._get_all_users,            
             Request.Type.USER_EXISTS: self._user_exists,
             Request.Type.GET_ALL_ITEMS: self._get_all_items,
-            Request.Type.GET_NAME: self._get_user_name,
+            Request.Type.GET_CURRENT_USER_NAME: self._get_user_name,
             Request.Type.GET_CREDITS: self._get_user_credits,
-            Request.Type.GET_MY_ITEMS: self._get_user_items,
+            Request.Type.GET_USER_ITEMS_NAMES: self._get_user_items,
             Request.Type.PURCHASE_ITEM: self._buy_item,
             Request.Type.SELL_ITEM: self._sell_item
         }
@@ -142,7 +142,7 @@ class ServerCore:
         return self._request_handlers[request.request_type](user, request.data)
 
     def _get_all_users(self, *_):
-        request_type = Request.Type.GET_ALL_USERS
+        request_type = Request.Type.GET_ALL_USERS_NAMES
         return Responce(request_type, data=self._users.keys())
 
     def _get_all_items(self, *_):
@@ -158,8 +158,8 @@ class ServerCore:
 
     def _get_user_name(self, user, _):
         if not user:
-            return self._no_user_responce(Request.Type.GET_NAME)
-        return Responce(Request.Type.GET_NAME, data=user.name)
+            return self._no_user_responce(Request.Type.GET_CURRENT_USER_NAME)
+        return Responce(Request.Type.GET_CURRENT_USER_NAME, data=user.name)
 
     def _get_user_credits(self, user, _):
         if not user:
@@ -168,10 +168,10 @@ class ServerCore:
 
     def _get_user_items(self, user, _):
         if not user:
-            return self._no_user_responce(Request.Type.GET_MY_ITEMS)
+            return self._no_user_responce(Request.Type.GET_USER_ITEMS_NAMES)
         ret = ["{}: {}".format(name, quantity) \
             for name, quantity in user.items.items()]
-        return Responce(Request.Type.GET_MY_ITEMS, data=ret)
+        return Responce(Request.Type.GET_USER_ITEMS_NAMES, data=ret)
 
     def _buy_item(self, user, item_name):
         request_type = Request.Type.PURCHASE_ITEM

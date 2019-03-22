@@ -13,10 +13,10 @@ class TUI:
     """
 
     _commands = {
-        "users": Request.Type.GET_ALL_USERS,
-        "name": Request.Type.GET_NAME,
+        "users": Request.Type.GET_ALL_USERS_NAMES,
+        "name": Request.Type.GET_CURRENT_USER_NAME,
         "credits": Request.Type.GET_CREDITS,
-        "items": Request.Type.GET_MY_ITEMS,
+        "items": Request.Type.GET_USER_ITEMS_NAMES,
         "market": Request.Type.GET_ALL_ITEMS,
         "buy": Request.Type.PURCHASE_ITEM,
         "sell": Request.Type.SELL_ITEM,
@@ -24,10 +24,10 @@ class TUI:
     }
 
     _commands_descriptions = {
-        Request.Type.GET_ALL_USERS: "show list of all users",
-        Request.Type.GET_NAME: "show name of current user",
+        Request.Type.GET_ALL_USERS_NAMES: "show list of all users",
+        Request.Type.GET_CURRENT_USER_NAME: "show name of current user",
         Request.Type.GET_CREDITS: "show credits you have",
-        Request.Type.GET_MY_ITEMS: "show items you have",
+        Request.Type.GET_USER_ITEMS_NAMES: "show items you have",
         Request.Type.GET_ALL_ITEMS: "show all aceccible items",
         Request.Type.PURCHASE_ITEM: "buy item, usage: buy <item_name>",
         Request.Type.SELL_ITEM: "sell item, usage: sell <item_name>",
@@ -47,11 +47,11 @@ class TUI:
         self._last_item = None
         self._server = None
         self._result_retrievers = {
-            Request.Type.GET_ALL_USERS: self._print_list,
+            Request.Type.GET_ALL_USERS_NAMES: self._print_list,
             Request.Type.LOG_IN: self._show_log_in_result,
-            Request.Type.GET_NAME: self._say_name,
+            Request.Type.GET_CURRENT_USER_NAME: self._say_name,
             Request.Type.GET_CREDITS: self._show_account,
-            Request.Type.GET_MY_ITEMS: self._print_list,
+            Request.Type.GET_USER_ITEMS_NAMES: self._print_list,
             Request.Type.GET_ALL_ITEMS: self._print_list,
             Request.Type.PURCHASE_ITEM: self._show_deal_result,
             Request.Type.SELL_ITEM: self._show_deal_result
@@ -160,7 +160,7 @@ class TUI:
             if not user_name:
                 print("Empty login")
             elif user_name == "users":
-                responce = self._server.execute(Request.Type.GET_ALL_USERS)
+                responce = self._server.execute(Request.Type.GET_ALL_USERS_NAMES)
                 self._print_list(responce)
             else:
                 responce = self._server.execute(Request.Type.USER_EXISTS, user_name)
