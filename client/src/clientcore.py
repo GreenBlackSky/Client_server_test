@@ -118,10 +118,5 @@ class ClientCore:
 
     def _log_out(self):
         # both
-        confirm = self._ui.confirm_log_out()
-        if confirm:
-            self._server.execute(Request.Type.LOG_OUT)
-            self._state = ClientCore._State.ASKING_NAME
-        else:
-            self._state = ClientCore._State.GETTING_COMMAND
-
+        self._server.execute(Request.Type.LOG_OUT)
+        self._state = ClientCore._State.ASKING_NAME

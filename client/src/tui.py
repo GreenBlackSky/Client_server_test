@@ -34,6 +34,12 @@ class TUI:
         Request.Type.LOG_OUT: "log out"
     }
 
+    _need_confirmation = {
+        Request.Type.PURCHASE_ITEM: "Are you sure you want to buy it?",
+        Request.Type.SELL_ITEM: "Are you sure you want to sell it?",
+        Request.Type.LOG_OUT: "Are you sure you want to log out?",
+    }
+
 # Util
 
     def __init__(self):
@@ -177,16 +183,14 @@ class TUI:
 
             if user_input not in self._commands:
                 print("Unexpected input. Print help for help.")
-            else:
+                return
+
+            command = self._commands[user_input]
+            if command not in self._need_confirmation or \
+                    self._confirm_action(self._need_confirmation[command]):
                 if new_item:
                     self._last_item = new_item
                 return self._commands[user_input]
-
-    def confirm_log_out(self):
-        """Ask user if he sure he wants to log out.
-
-        May rise SystemExit exception."""
-        return self._confirm_action("Log out?")
 
 # Output methods
 
@@ -231,6 +235,4 @@ class TUI:
                 print(item)
 
 # TODO manipulate users from admin account
-# TODO ask confirmation for buying and selling
 # TODO add About item command
-
