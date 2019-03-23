@@ -51,7 +51,7 @@ class TUI:
             Request.Type.LOG_IN: self._show_log_in_result,
             Request.Type.GET_CURRENT_USER_NAME: self._say_name,
             Request.Type.GET_CREDITS: self._show_account,
-            Request.Type.GET_USER_ITEMS_NAMES: self._print_list,
+            Request.Type.GET_USER_ITEMS_NAMES: self._print_dict,
             Request.Type.GET_ALL_ITEMS: self._print_list,
             Request.Type.PURCHASE_ITEM: self._show_deal_result,
             Request.Type.SELL_ITEM: self._show_deal_result
@@ -183,7 +183,7 @@ class TUI:
 
             if user_input not in self._commands:
                 print("Unexpected input. Print help for help.")
-                return
+                continue
 
             command = self._commands[user_input]
             if command not in self._need_confirmation or \
@@ -234,5 +234,14 @@ class TUI:
             for item in responce.data:
                 print(item)
 
+    def _print_dict(self, responce):
+        if not responce.success:
+            print(responce.message)
+        elif not responce.data:
+            print("Empty")
+        else:
+            for key, val in responce.data.items():
+                print(key, ": ", val)
+
 # TODO manipulate users from admin account
-# TODO add About item command
+# TODO 5 add About item command

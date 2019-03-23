@@ -55,4 +55,4 @@ class Responce(Request):
         """Get additional info on request."""
         return self._message
 
-# TODO GET_USER instead of GET_CURRENT_USER_NAME, GET_CREDITS and GET_USER_ITEMS_NAMES
+# TODO 4 GET_USER and GET_ITEM

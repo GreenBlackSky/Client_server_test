@@ -169,9 +169,7 @@ class ServerCore:
     def _get_user_items(self, user, _):
         if not user:
             return self._no_user_responce(Request.Type.GET_USER_ITEMS_NAMES)
-        ret = ["{}: {}".format(name, quantity) \
-            for name, quantity in user.items.items()]
-        return Responce(Request.Type.GET_USER_ITEMS_NAMES, data=ret)
+        return Responce(Request.Type.GET_USER_ITEMS_NAMES, data=user.items)
 
     def _buy_item(self, user, item_name):
         request_type = Request.Type.PURCHASE_ITEM
@@ -211,5 +209,4 @@ class ServerCore:
         self._operation_count += 1
         return ret
 
-# TODO buy number of items
-# TODO send user items as dict
+# TODO 2 buy number of items
