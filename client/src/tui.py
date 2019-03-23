@@ -18,6 +18,8 @@ class TUI:
         "credits": Request.Type.GET_CREDITS,
         "items": Request.Type.GET_USER_ITEMS_NAMES,
         "market": Request.Type.GET_ALL_ITEMS,
+        "price": Request.Type.GET_ITEM,
+        "has": Request.Type.USER_HAS,
         "buy": Request.Type.PURCHASE_ITEM,
         "sell": Request.Type.SELL_ITEM,
         "leave": Request.Type.LOG_OUT
@@ -29,14 +31,16 @@ class TUI:
         Request.Type.GET_CREDITS: "show credits you have",
         Request.Type.GET_USER_ITEMS_NAMES: "show items you have",
         Request.Type.GET_ALL_ITEMS: "show all aceccible items",
+        Request.Type.GET_ITEM: "show price of item, usage: price <item_name>",
+        Request.Type.USER_HAS: "check how much of given item user has, usage: find <item_name>",
         Request.Type.PURCHASE_ITEM: "buy item, usage: buy <item_name>",
         Request.Type.SELL_ITEM: "sell item, usage: sell <item_name>",
         Request.Type.LOG_OUT: "log out"
     }
 
     _need_confirmation = {
-        Request.Type.PURCHASE_ITEM: "Are you sure you want to buy it?",
-        Request.Type.SELL_ITEM: "Are you sure you want to sell it?",
+        Request.Type.PURCHASE_ITEM: "Are you sure you want to buy this item?",
+        Request.Type.SELL_ITEM: "Are you sure you want to sell this item?",
         Request.Type.LOG_OUT: "Are you sure you want to log out?",
     }
 
@@ -49,9 +53,11 @@ class TUI:
         self._result_retrievers = {
             Request.Type.GET_ALL_USERS_NAMES: self._print_list,
             Request.Type.LOG_IN: self._show_log_in_result,
-            Request.Type.GET_CURRENT_USER_NAME: self._say_name,
+            Request.Type.GET_CURRENT_USER_NAME: self._show_responce,
             Request.Type.GET_CREDITS: self._show_account,
             Request.Type.GET_USER_ITEMS_NAMES: self._print_dict,
+            Request.Type.GET_ITEM: self._show_responce,
+            Request.Type.USER_HAS: self._show_responce,
             Request.Type.GET_ALL_ITEMS: self._print_list,
             Request.Type.PURCHASE_ITEM: self._show_deal_result,
             Request.Type.SELL_ITEM: self._show_deal_result
@@ -77,7 +83,7 @@ class TUI:
     def _confirm_exit(self):
         """Throw a SystemExit exception if user confirms exit."""
         while True:
-            user_input = input("Are you sure you want to exit?(y/n)")
+            user_input = input("Are you sure you want to exit?(y/n)\n")
             user_input = user_input.strip().lower()
             if user_input == 'y':
                 raise SystemExit
@@ -176,8 +182,8 @@ class TUI:
         May rise SystemExit exception."""
         while True:
             user_input = self._get_input("Enter command:")
-
             new_item = None
+
             if user_input.count(" ") >= 1:
                 user_input, new_item = user_input.split(" ", 1)
 
@@ -195,7 +201,7 @@ class TUI:
 # Output methods
 
     def show_result(self, responce):
-        """Show user responce from server."""
+        """Show responce from server."""
         self._result_retrievers[responce.request_type](responce)
 
     def _show_log_in_result(self, responce):
@@ -207,7 +213,7 @@ class TUI:
         else:
             print(responce.message)
 
-    def _say_name(self, responce):
+    def _show_responce(self, responce):
         if responce.success:
             print(responce.data)
         else:
@@ -244,4 +250,4 @@ class TUI:
                 print(key, ": ", val)
 
 # TODO manipulate users from admin account
-# TODO 5 add About item command
+# TODO get items quantity for deal

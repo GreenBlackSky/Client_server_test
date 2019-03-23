@@ -5,8 +5,6 @@ It is used to read json-based data bases with User.
 
 from json import load, dump
 from addshare import get_abs_path
-from item import Item
-from item_db import decode_item
 from user import User
 
 
@@ -14,7 +12,11 @@ class UsersDB:
     """Class handles JSON-based data base with users."""
 
     def __init__(self, path):
-        """Open connection with data base with users."""
+        """Open connection with data base with users.
+        
+        Behaves like dict for the most part.
+        Create new user if no user under given name is exists.
+        """
         self._users = dict()
         self._path = path
         with open(get_abs_path() + path, "r") as stream:
@@ -42,6 +44,10 @@ class UsersDB:
     def keys(self):
         """Get all users names in data base as a list."""
         return list(self._users.keys())
+
+    def values(self):
+        """Get list of all users in data base."""
+        return list(self._users.values())
 
     def commit(self):
         """Commit changes into data base."""

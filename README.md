@@ -2,11 +2,14 @@
 
 ## Client
 Simple console app, which allows to communicate with server. User can:
+* get list of existing accounts
 * login into his account, or create new one
 * check his credits
 * check his items
 * check list of all items in game
 * purchase items from list, using his credits, or sell any of his items
+* check how much items of some kind he has
+* get prices for item
 
 `client.py` is executable for client.
 
@@ -29,10 +32,8 @@ Server config must contain following fields:
 * `min_init_credits` - upper bound for log in credits
 * `items_db_path` - relative path to data base with items from project root
 * `users_db_path` - relative path to data base with users from project root
-* `save_frequency` - frequency of commits to users data base. (In turms of buy/sell operations.)
+* `save_frequency` - frequency of commits to users data base. (In turms of successfull operations.)
 * `simultanious_log_ins` - flag, which allows different clients simultaniously log in into one user. To forbid such behaviour, one must set it to empty string.
-
-By default both databases are stored in `{prj}\server\data`
 
 ## Dependecies
 * Project has been developed with use of python 3.6
@@ -45,7 +46,8 @@ By default both databases are stored in `{prj}\server\data`
 #### Client-side
 * `Tui` - text user interface. Class passes messages from user to `ClientCore` and vice-versa. It can also interract directly with `ServerHandler`, without changing clients state. But this direct interration MUST be used only for retrieving information.
 * `ClientCore` class contains all client-side logic.
-* `ServerHandler` is TCP based bridge between `ClientCore` and server.
+* `ServerHandler` is TCP based bridge between `ClientCore` and server. Plain and simple, it can only pass requests and return responces.
+* `Proxy` - wrapper for ServerHandler. It has cache and some mechanics to use it in order to reduce number of excessive network communications.
 
 #### Server-side
 * `ClientHandler` class handles connections with clients. TCP-based.
@@ -54,6 +56,26 @@ By default both databases are stored in `{prj}\server\data`
 
 #### Shared
 * `Request` and `Responce` classes are used to pass information between client and server.
+ There are 18 types of these. Each of them do quite what its name stands for.
+    1. USER_EXISTS
+    1. GET_USER
+    1. GET_ALL_USERS
+    1. GET_ALL_USERS_NAMES
+    1. GET_ITEM
+    1. GET_ALL_ITEMS
+    1. GET_ALL_ITEMS_NAMES
+    1. GET_CURRENT_USER
+    1. GET_CURRENT_USER_NAME
+    1. GET_CREDITS
+    1. USER_HAS
+    1. GET_USER_ITEMS
+    1. GET_USER_ITEMS_NAMES
+    1. PING
+    1. LOG_IN
+    1. PURCHASE_ITEM
+    1. SELL_ITEM
+    1. LOG_OUT
+
 * `ConfigHandler` is used to open, parse and check configuration.
 * `User` and `Item` classes represent user and item =).
 * `addshared` module contains method `get_abs_path`, which gets absolute path to project directory. On include it modifyes local `PYTHONPATH` (for this run of project) by including `shared` directory.
@@ -62,5 +84,5 @@ Although, these components are quite naive, they are designed to be replaceble. 
 JSON as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.
 
 ## Path of request
-User asks client app to do something via UI. `TUI` in this case. `TUI` triggers some methods in `ClientCore` mechanism directly, or generates `Request` object and passes in to `ClientCore`. `ClientCore` passes request to `ServerHandler`. `ServerHandler` passes it to server app using network. In server app `ClientHandler` gets the request. It has its own instance of `ServerCore._Handler`. Though `ServerCore` contains all server logic inside itself, it generates handlers to deal with multile clients simulteniously. `_Handler` process the request, using `ServerCore` methods and data bases. It generates `Responce`, which contains result of request execution.
+User asks client app to do something via UI. `TUI` in this case. `TUI` triggers some methods in `ClientCore` mechanism directly, or generates `Request` object and passes in to `Proxy`. `Proxy` processes request, responce with cached value if possible or honestly passes request to `ServerHandler`. `ServerHandler` passes it to server app using network. In server app `ClientHandler` gets the request. It has its own instance of `ServerCore._Handler`. Though `ServerCore` contains all server logic inside itself, it generates handlers to deal with multile clients simulteniously. `_Handler` process the request, using `ServerCore` methods and data bases. It generates `Responce`, which contains result of request execution.
 Then `Responce` makes the same way backwards to User.

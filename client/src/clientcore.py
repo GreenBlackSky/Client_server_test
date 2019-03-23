@@ -13,6 +13,8 @@ class ClientCore:
     But that is exaclty what is called spaghetti-code =)
     Most of methods works exclusively with user via ui,
     or with server via network handler.
+    Class is designed so you never have to pay for what you haven't asked for.
+    It means no cache, only straight and simple request-responce behavior.
     """
 
     class _State(Enum):

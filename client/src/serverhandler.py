@@ -6,7 +6,10 @@ from request import Request
 
 
 class ServerHandler:
-    """ServerHandler handles connection with server on client side."""
+    """ServerHandler handles connection with server on client side.
+    
+    Implements straight send-recieve model.
+    """
 
     def __init__(self, host, port, timeout):
         """Initialize client.

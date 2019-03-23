@@ -8,11 +8,7 @@ from addshare import get_abs_path
 from item import Item
 
 def decode_item(data):
-    """Method transform dict into Item.
-
-    Take dict and if it has all necessary properties,
-    return Item object.
-    """
+    """Decode Item from JSON file."""
     if "name" in data and \
         "buy" in data and \
             "sell" in data:
@@ -21,7 +17,10 @@ def decode_item(data):
                     data["sell"])
 
 class ItemsDB:
-    """Class handles JSON-based data base with items."""
+    """Class handles JSON-based data base with items.
+    
+    Behaves like dict for the most part.
+    """
 
     def __init__(self, path):
         """Open connection to data base with items."""
@@ -29,6 +28,10 @@ class ItemsDB:
         with open(get_abs_path() + path, "r") as stream:
             items = load(stream, object_hook=decode_item)
             self._items = {item.name: item for item in items}
+
+    def keys(self):
+        """Get list of all items names in data base."""
+        return list(self._items.keys())
 
     def values(self):
         """Get list of all items."""

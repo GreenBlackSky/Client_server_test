@@ -1,18 +1,16 @@
 [
     {
-        "credits": 82,
-        "name": "Dany",
-        "items": {
-            "Drogon": 1,
-            "Rhaegal": 1,
-            "Viserion": 1
-        }
-    },
-    {
         "credits": 250,
         "name": "Cersei",
         "items": {
             "Mountain": 1
+        }
+    },
+    {
+        "credits": 129,
+        "name": "Dany",
+        "items": {
+            "dragon": 2
         }
     },
     {

@@ -4,7 +4,10 @@ from socketserver import TCPServer, ThreadingMixIn, BaseRequestHandler
 from pickle import dumps, loads
 
 class ClientHandler(ThreadingMixIn, TCPServer):
-    """ClientHandler handles connection with clients on server side."""
+    """ClientHandler handles connection with clients on server side.
+    
+    TCP-based.
+    """
 
     class _Handler(BaseRequestHandler):
 
@@ -32,7 +35,7 @@ class ClientHandler(ThreadingMixIn, TCPServer):
     def __init__(self, port, server_core):
         """Initialize server, listening to given port.
         
-        Takes port and server core fabric as arguments.
+        Takes port and ServerCore instance as arguments.
         """
         super().__init__(("127.0.0.1", port), ClientHandler._Handler)
         ClientHandler._Handler.server_core = server_core

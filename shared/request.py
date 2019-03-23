@@ -9,18 +9,34 @@ class Request:
     class Type(Enum):
         """Enum, which contains commands."""
 
-        PING = 0
-        USER_EXISTS = 1
-        GET_ALL_USERS_NAMES = 2
-        LOG_IN = 3
-        GET_CURRENT_USER_NAME = 4
-        GET_CREDITS = 5
-        GET_USER_ITEMS_NAMES = 6
-        GET_ALL_ITEMS = 7
-        PURCHASE_ITEM = 8
-        SELL_ITEM = 9
-        LOG_OUT = 10
+        # users
+        USER_EXISTS = 0
+        GET_USER = 1
+        GET_ALL_USERS = 2
+        GET_ALL_USERS_NAMES = 3
 
+        # items
+        GET_ITEM = 4
+        GET_ALL_ITEMS = 5
+        GET_ALL_ITEMS_NAMES = 6
+
+        # current user
+        GET_CURRENT_USER = 7
+        GET_CURRENT_USER_NAME = 8
+        GET_CREDITS = 9
+
+        # current user items
+        USER_HAS = 10
+        GET_USER_ITEMS = 11
+        GET_USER_ITEMS_NAMES = 12
+
+        # util
+        PING = 13
+        LOG_IN = 14
+        PURCHASE_ITEM = 15
+        SELL_ITEM = 16
+        LOG_OUT = 17
+        
     def __init__(self, request_type, data=None):
         """Create new request."""
         self._type, self._data = request_type, data
@@ -54,5 +70,3 @@ class Responce(Request):
     def message(self):
         """Get additional info on request."""
         return self._message
-
-# TODO 4 GET_USER and GET_ITEM

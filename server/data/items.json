@@ -35,19 +35,9 @@
         "sell": 12
     },
     {
-        "name": "Drogon",
+        "name": "dragon",
         "buy": 800,
         "sell": 400
-    },
-    {
-        "name": "Rhaegal",
-        "buy": 700,
-        "sell": 350
-    },
-    {
-        "name": "Viserion",
-        "buy": 10,
-        "sell": 5
     },
     {
         "name": "Mountain",
