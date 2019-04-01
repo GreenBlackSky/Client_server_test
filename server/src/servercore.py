@@ -30,9 +30,11 @@ class ServerCore:
 
         def _log_in(self, user_name):
             if self._parent.user_is_activated(user_name):
-                return Response(Request.Type.LOG_IN,
-                                success=False,
-                                message="User already online")
+                return Response(
+                    Request.Type.LOG_IN,
+                    success=False,
+                    message="User already online"
+                )
             if user_name not in self._parent.users:
                 self._parent.users.create_user(user_name)
             self._user = self._parent.users[user_name]
@@ -43,9 +45,11 @@ class ServerCore:
         def _log_out(self):
             request_type = Request.Type.LOG_OUT
             if not self._user:
-                return Response(request_type,
-                                success=False,
-                                message="Not logged in")
+                return Response(
+                    request_type,
+                    success=False,
+                    message="Not logged in"
+                )
             self._parent.deactivate_user(self._user.name)
             self._user = None
             self._parent.users.commit()
@@ -97,13 +101,16 @@ class ServerCore:
             Request.Type.GET_CURRENT_USER_NAME: lambda user: user.name,
             Request.Type.GET_CREDITS: lambda user: user.credits,
             Request.Type.GET_USER_ITEMS_NAMES: lambda user: user.items,
-            Request.Type.GET_USER_ITEMS: lambda user: {item.name: item
-                                                       for item in user.items}
+            Request.Type.GET_USER_ITEMS:
+                lambda user: {item.name: item for item in user.items}
         }
 
         self._complex_requests = {
             Request.Type.USER_EXISTS: lambda _, name:
-                Response(Request.Type.USER_EXISTS, data=(name in self._users)),
+                Response(
+                    Request.Type.USER_EXISTS,
+                    data=(name in self._users)
+                ),
             Request.Type.GET_USER: self._get_user,
             Request.Type.GET_ITEM: self._get_item,
             Request.Type.USER_HAS: self._user_has,
@@ -113,15 +120,19 @@ class ServerCore:
 
     @staticmethod
     def _no_user_response(request_type):
-        return Response(request_type,
-                        success=False,
-                        message="Not logged in")
+        return Response(
+            request_type,
+            success=False,
+            message="Not logged in"
+        )
 
     @staticmethod
     def _no_item_response(request_type, item_name):
-        return Response(request_type,
-                        success=False,
-                        message="Not such item: " + item_name)
+        return Response(
+            request_type,
+            success=False,
+            message=f"Not such item: {item_name}"
+        )
 
     @property
     def users(self):
@@ -165,13 +176,20 @@ class ServerCore:
         """Handle request for given user."""
         request_type = request.request_type
         if request_type in self._plain_requests:
-            ret = Response(request_type,
-                           data=self._plain_requests[request_type]())
+            ret = Response(
+                request_type,
+                data=self._plain_requests[request_type]()
+            )
+
         elif request_type in self._user_requests and not user:
             ret = self._no_user_response(request_type)
+
         elif request_type in self._user_requests:
-            ret = Response(request_type,
-                           data=self._user_requests[request_type](user))
+            ret = Response(
+                request_type,
+                data=self._user_requests[request_type](user)
+            )
+
         else:
             ret = self._complex_requests[request_type](user, request.data)
 
@@ -188,9 +206,11 @@ class ServerCore:
             return self._no_user_response(Request.Type.USER_HAS)
 
         if not item_name:
-            return Response(Request.Type.USER_HAS,
-                            success=False,
-                            message="No item")
+            return Response(
+                Request.Type.USER_HAS,
+                success=False,
+                message="No item"
+            )
 
         if item_name not in self._items:
             return self._no_item_response(Request.Type.USER_HAS, item_name)
@@ -205,14 +225,22 @@ class ServerCore:
         if item_name not in self._items:
             return self._no_item_response(Request.Type.GET_ITEM, item_name)
 
-        return Response(Request.Type.GET_ITEM, data=self._items[item_name])
+        return Response(
+            Request.Type.GET_ITEM,
+            data=self._items[item_name]
+        )
 
     def _get_user(self, user, user_name):
         if user_name not in self._users:
-            return Response(Request.Type.GET_USER,
-                            success=False,
-                            message="No such user")
-        return Response(Request.Type.GET_USER, data=self._users[user_name])
+            return Response(
+                Request.Type.GET_USER,
+                success=False,
+                message="No such user"
+            )
+        return Response(
+            Request.Type.GET_USER,
+            data=self._users[user_name]
+        )
 
     def _buy_item(self, user, item_name):
         request_type = Request.Type.PURCHASE_ITEM
@@ -224,14 +252,18 @@ class ServerCore:
 
         item = self._items[item_name]
         if item.buying_price > user.credits:
-            return Response(request_type,
-                            success=False,
-                            message="Not enough money")
+            return Response(
+                request_type,
+                success=False,
+                message="Not enough money"
+            )
 
         user.credits -= item.buying_price
         user.items[item_name] = user.items.get(item_name, 0) + 1
         self._operation_count += 1
-        return Response(request_type, message="Item bought: " + item_name)
+        return Response(
+            request_type,
+            message=f"Item bought: {item_name}")
 
     def _sell_item(self, user, item_name):
         request_type = Request.Type.SELL_ITEM
@@ -243,15 +275,17 @@ class ServerCore:
 
         item = self._items[item_name]
         if item_name not in user.items:
-            return Response(request_type,
-                            success=False,
-                            message="You don't have " + item_name)
+            return Response(
+                request_type,
+                success=False,
+                message=f"You don't have {item_name}"
+            )
 
         user.items[item_name] -= 1
         if user.items[item_name] == 0:
             user.items.pop(item_name)
         user.credits += item.selling_price
         self._operation_count += 1
-        return Response(request_type, message="Item sold: " + item_name)
+        return Response(request_type, message=f"Item sold: {item_name}")
 
 # TODO buy number of items

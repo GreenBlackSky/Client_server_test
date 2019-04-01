@@ -86,7 +86,7 @@ class TUI:
         while True:
             user_input = input("Are you sure you want to exit?(y/n)\n")
             user_input = user_input.strip().lower()
-            if user_input == 'y':
+            if user_input == 'y' or user_input == 'q':
                 raise SystemExit
             elif user_input == 'n':
                 return
@@ -101,8 +101,10 @@ class TUI:
                 return True
             elif user_input == 'n':
                 return False
-            elif user_input == 'quit':
+            elif user_input == 'quit' or user_input == 'q':
                 self._confirm_exit()
+            elif user_input.startswith('help '):
+                self._help(user_input[5:])
             else:
                 print("Unexpected input. Print help for help.")
 
@@ -115,7 +117,7 @@ class TUI:
             elif command == "help":
                 print("help\tprint tips or command help. \
                        Usage: help <command>")
-            elif command == "quit":
+            elif command == "quit" or user_input == 'q':
                 print(command + ": Exit game")
             else:
                 print(command + ": unknown command")
@@ -125,7 +127,7 @@ class TUI:
                 description = self._commands_descriptions[command]
                 print(f"{command_name}\t{description}")
             print("help\tprint tips or command help. Usage: help <command>")
-            print("quit")
+            print("quit, q")
 
     @property
     def last_item(self):
@@ -171,13 +173,17 @@ class TUI:
                 print("Empty login")
             elif user_name == "users":
                 response = self._server.execute(
-                    Request.Type.GET_ALL_USERS_NAMES)
+                    Request.Type.GET_ALL_USERS_NAMES
+                )
                 self._print_list(response)
             else:
-                response = self._server.execute(Request.Type.USER_EXISTS,
-                                                user_name)
+                response = self._server.execute(
+                    Request.Type.USER_EXISTS,
+                    user_name
+                )
                 if response.data or self._confirm_action(
-                        f"No user with name: {user_name}\nCreate new user?"):
+                    f"No user with name: {user_name}\nCreate new user?"
+                ):
                     return user_name
 
     def get_command(self):
@@ -197,8 +203,9 @@ class TUI:
                 continue
 
             command = self._commands[user_input]
-            if command not in self._need_confirmation or \
-                    self._confirm_action(self._need_confirmation[command]):
+            if command not in self._need_confirmation or self._confirm_action(
+                self._need_confirmation[command]
+            ):
                 self._last_item = new_item
                 return self._commands[user_input]
 

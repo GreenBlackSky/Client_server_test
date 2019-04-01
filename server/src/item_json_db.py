@@ -9,9 +9,7 @@ from item import Item
 
 def decode_item(data):
     """Decode Item from JSON file."""
-    if "name" in data and \
-        "buy" in data and \
-            "sell" in data:
+    if "name" in data and "buy" in data and "sell" in data:
         return Item(data["name"],
                     data["buy"],
                     data["sell"])

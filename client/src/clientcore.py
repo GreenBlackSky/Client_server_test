@@ -109,8 +109,10 @@ class ClientCore:
         if self._last_command is Request.Type.LOG_OUT:
             self._state = ClientCore._State.LOGGINIG_OUT
         else:
-            self._last_result = self._server.execute(self._last_command,
-                                                     self._ui.last_item)
+            self._last_result = self._server.execute(
+                self._last_command,
+                self._ui.last_item
+            )
             self._state = ClientCore._State.RETRIEVING_RESULT
 
     def _retrieve_result(self):

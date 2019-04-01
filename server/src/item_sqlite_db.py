@@ -35,8 +35,7 @@ class ItemsDB:
         tuples = self._execute(
             "SELECT name, selling_price, buying_price FROM items"
         )
-        ret = [Item(name, buy, sell) for name, buy, sell in tuples]
-        return ret
+        return [Item(name, buy, sell) for name, buy, sell in tuples]
 
     def __contains__(self, item_name):
         """Check if item with given name is in db."""

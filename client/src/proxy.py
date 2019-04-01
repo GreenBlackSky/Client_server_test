@@ -64,6 +64,8 @@ class Proxy:
         self._cache[Request.Type.GET_CURRENT_USER_NAME] = user.name
         self._cache[Request.Type.GET_CREDITS] = user.credits
         self._cache[Request.Type.GET_USER_ITEMS_NAMES] = user.items
+        if user.name not in self._cache[Request.Type.GET_ALL_USERS_NAMES]:
+            self._cache[Request.Type.GET_ALL_USERS_NAMES].append(user.name)
 
     def _clear_user_info(self, *_):
         for request_type in [
