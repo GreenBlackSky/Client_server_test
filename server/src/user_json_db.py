@@ -14,7 +14,6 @@ class UsersDB:
         """Open connection with data base with users.
 
         Behaves like dict for the most part.
-        Create new user if no user under given name is exists.
         """
         self._users = dict()
         self._path = path

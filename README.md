@@ -44,9 +44,9 @@ Server config must contain following fields:
 ## Dependecies
 
 * Project has been developed with use of python 3.6
-* Standart mofule `json` is used to read configuration both for server and for client.
+* Standart module `json` is used to read configuration both for server and for client.
 * Standart module `socket` is used for communication between server and client.
-* Both databases are also implemented as `json` files. Server config must contain relative pathes to them.
+* Both databases are implemented as `sqlite` data bases. Server config must contain pathes to them.
 * Not a dependancy, but worth mentioning. `server.py` and `client.py` are both meant to be executed from project root. If you want to run any of them from another place, you would want to pass it path to config through argument. Also, a little trick has been used to include shared modules. I didn't want to mess with `PYTHONPATH` or install my packages into system.
 
 ## Components
@@ -62,7 +62,7 @@ Server config must contain following fields:
 
 * `ClientHandler` class handles connections with clients. TCP-based.
 * `ServerCore` class contains server-side logic. It creates new handler foe each new client connection. Handler takes requests from `ClientHandler`, processes them and response with answers. All Handlers share users and items data bases.
-* `ItemsDB` and `UsersDB` handles data bases with items and users respectively. Both JSON-based. `UserDB` rewrites whole JSON-file on commit, which is sad. But JSON was never intended to be used in huge scaled data bases and here serves just as an example. In more serious project one would replace `UserDB` with some SQL or NoSQL data base handler, like Sqlite or PostgreSQL.
+* `ItemsDB` and `UsersDB` handles data bases with items and users respectively. Both SQLite-based. In more serious project one would replace `UserDB` with something smarter, like PostgreSQL.
 
 ### Shared
 
@@ -92,7 +92,7 @@ Server config must contain following fields:
 * `addshared` module contains method `get_abs_path`, which gets absolute path to project directory. On include it modifyes local `PYTHONPATH` (for this run of project) by including `shared` directory.
 
 Although, these components are quite naive, they are designed to be replaceble. Query-handling in `ServerCore` can be improved by using Celery.
-JSON as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.
+SQLite as database, TUI as user interface, TCP for networking - any of this components can be replaced by more mature solution.
 
 ## Path of request
 

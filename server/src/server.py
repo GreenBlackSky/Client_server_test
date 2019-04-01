@@ -2,8 +2,8 @@
 
 import addshare
 from confighandler import open_config, transform_config
-from item_json_db import ItemsDB
-from user_json_db import UsersDB
+from item_sqlite_db import ItemsDB
+from user_sqlite_db import UsersDB
 from servercore import ServerCore
 from clienthandler import ClientHandler
 
