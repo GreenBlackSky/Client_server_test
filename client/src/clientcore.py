@@ -14,7 +14,7 @@ class ClientCore:
     Most of methods works exclusively with user via ui,
     or with server via network handler.
     Class is designed so you never have to pay for what you haven't asked for.
-    It means no cache, only straight and simple request-responce behavior.
+    It means no cache, only straight and simple request-response behavior.
     """
 
     class _State(Enum):
@@ -92,9 +92,9 @@ class ClientCore:
 
     def _log_in(self):
         # both
-        responce = self._server.execute(Request.Type.LOG_IN, self._user_name)
-        self._ui.show_result(responce)
-        if responce.success:
+        response = self._server.execute(Request.Type.LOG_IN, self._user_name)
+        self._ui.show_result(response)
+        if response.success:
             self._state = ClientCore._State.GETTING_COMMAND
         else:
             self._state = ClientCore._State.ASKING_NAME

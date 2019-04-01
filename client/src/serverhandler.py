@@ -7,7 +7,7 @@ from request import Request
 
 class ServerHandler:
     """ServerHandler handles connection with server on client side.
-    
+
     Implements straight send-recieve model.
     """
 
@@ -33,16 +33,16 @@ class ServerHandler:
         request = Request(request_type, data)
         self._socket.sendall(dumps(request))
 
-    def _get_responce(self):
+    def _get_response(self):
         try:
             return loads(self._socket.recv(1024))
         except:
             raise ConnectionError
 
     def execute(self, request_type, arg=None):
-        """Send request and get responce from server.
+        """Send request and get response from server.
 
         Raises an exception if connection lost.
         """
         self._send_request(request_type, arg)
-        return self._get_responce()
+        return self._get_response()

@@ -32,7 +32,8 @@ class TUI:
         Request.Type.GET_USER_ITEMS_NAMES: "show items you have",
         Request.Type.GET_ALL_ITEMS: "show all aceccible items",
         Request.Type.GET_ITEM: "show price of item, usage: price <item_name>",
-        Request.Type.USER_HAS: "check how much of given item user has, usage: find <item_name>",
+        Request.Type.USER_HAS:
+            "check how much of given item user has, usage: find <item_name>",
         Request.Type.PURCHASE_ITEM: "buy item, usage: buy <item_name>",
         Request.Type.SELL_ITEM: "sell item, usage: sell <item_name>",
         Request.Type.LOG_OUT: "log out"
@@ -53,11 +54,11 @@ class TUI:
         self._result_retrievers = {
             Request.Type.GET_ALL_USERS_NAMES: self._print_list,
             Request.Type.LOG_IN: self._show_log_in_result,
-            Request.Type.GET_CURRENT_USER_NAME: self._show_responce,
+            Request.Type.GET_CURRENT_USER_NAME: self._show_response,
             Request.Type.GET_CREDITS: self._show_account,
             Request.Type.GET_USER_ITEMS_NAMES: self._print_dict,
-            Request.Type.GET_ITEM: self._show_responce,
-            Request.Type.USER_HAS: self._show_responce,
+            Request.Type.GET_ITEM: self._show_response,
+            Request.Type.USER_HAS: self._show_response,
             Request.Type.GET_ALL_ITEMS: self._print_list,
             Request.Type.PURCHASE_ITEM: self._show_deal_result,
             Request.Type.SELL_ITEM: self._show_deal_result
@@ -112,7 +113,8 @@ class TUI:
                 description = self._commands_descriptions[request_type]
                 print(command + ": " + description)
             elif command == "help":
-                print("help\tprint tips or command help. Usage: help [<command>]")
+                print("help\tprint tips or command help. \
+                       Usage: help <command>")
             elif command == "quit":
                 print(command + ": Exit game")
             else:
@@ -121,8 +123,8 @@ class TUI:
             print("Tips:")
             for command_name, command in self._commands.items():
                 description = self._commands_descriptions[command]
-                print("{}\t{}".format(command_name, description))
-            print("help\tprint tips or command help. Usage: help [<command>]")
+                print(f"{command_name}\t{description}")
+            print("help\tprint tips or command help. Usage: help <command>")
             print("quit")
 
     @property
@@ -135,7 +137,7 @@ class TUI:
     def greet(self):
         """Print welcome messange."""
         print("Welcome!")
-        self._help()        
+        self._help()
 
     def say_wait_for_connection(self):
         """Print message about establishing connection."""
@@ -154,32 +156,35 @@ class TUI:
     def ask_retry_connection(self):
         """Inform user about failed connection and ask retry.
 
-        May rise SystemExit exception."""
+        May rise SystemExit exception.
+        """
         return self._confirm_action("Connection failed. Retry?")
 
     def ask_user_name(self):
         """Get user name.
 
-        May rise SystemExit exception."""
+        May rise SystemExit exception.
+        """
         while True:
             user_name = self._get_input("Enter your login:")
             if not user_name:
                 print("Empty login")
             elif user_name == "users":
-                responce = self._server.execute(Request.Type.GET_ALL_USERS_NAMES)
-                self._print_list(responce)
+                response = self._server.execute(
+                    Request.Type.GET_ALL_USERS_NAMES)
+                self._print_list(response)
             else:
-                responce = self._server.execute(Request.Type.USER_EXISTS, user_name)
-                if responce.data or \
-                     self._confirm_action("No user with name: " + \
-                                          user_name + \
-                                          "\nCreate new user?"):
+                response = self._server.execute(Request.Type.USER_EXISTS,
+                                                user_name)
+                if response.data or self._confirm_action(
+                        f"No user with name: {user_name}\nCreate new user?"):
                     return user_name
 
     def get_command(self):
         """Get command from user.
 
-        May rise SystemExit exception."""
+        May rise SystemExit exception.
+        """
         while True:
             user_input = self._get_input("Enter command:")
             new_item = None
@@ -200,53 +205,53 @@ class TUI:
 
 # Output methods
 
-    def show_result(self, responce):
-        """Show responce from server."""
-        self._result_retrievers[responce.request_type](responce)
+    def show_result(self, response):
+        """Show response from server."""
+        self._result_retrievers[response.request_type](response)
 
-    def _show_log_in_result(self, responce):
-        if responce.success:
+    def _show_log_in_result(self, response):
+        if response.success:
             print("User logged in")
-            responce = self._server.execute(Request.Type.GET_CREDITS)
-            print("You have", responce.data, "credits")
+            response = self._server.execute(Request.Type.GET_CREDITS)
+            print("You have", response.data, "credits")
 
         else:
-            print(responce.message)
+            print(response.message)
 
-    def _show_responce(self, responce):
-        if responce.success:
-            print(responce.data)
+    def _show_response(self, response):
+        if response.success:
+            print(response.data)
         else:
-            print(responce.message)
+            print(response.message)
 
-    def _show_account(self, responce):
-        if responce.success:
-            print("Your account:", responce.data)
+    def _show_account(self, response):
+        if response.success:
+            print("Your account:", response.data)
         else:
-            print(responce.message)
+            print(response.message)
 
-    def _show_deal_result(self, responce):
-        if responce.success:
+    def _show_deal_result(self, response):
+        if response.success:
             print("Success!")
         else:
-            print(responce.message)
-        
-    def _print_list(self, responce):
-        if not responce.success:
-            print(responce.message)
-        elif not responce.data:
+            print(response.message)
+
+    def _print_list(self, response):
+        if not response.success:
+            print(response.message)
+        elif not response.data:
             print("Empty")
         else:
-            for item in responce.data:
+            for item in response.data:
                 print(item)
 
-    def _print_dict(self, responce):
-        if not responce.success:
-            print(responce.message)
-        elif not responce.data:
+    def _print_dict(self, response):
+        if not response.success:
+            print(response.message)
+        elif not response.data:
             print("Empty")
         else:
-            for key, val in responce.data.items():
+            for key, val in response.data.items():
                 print(key, ": ", val)
 
 # TODO manipulate users from admin account

@@ -36,7 +36,7 @@ class Request:
         PURCHASE_ITEM = 15
         SELL_ITEM = 16
         LOG_OUT = 17
-        
+
     def __init__(self, request_type, data=None):
         """Create new request."""
         self._type, self._data = request_type, data
@@ -52,11 +52,11 @@ class Request:
         return self._data
 
 
-class Responce(Request):
-    """Responce, that is used to pass info from server to client."""
+class Response(Request):
+    """Response, that is used to pass info from server to client."""
 
     def __init__(self, request_type, success=True, data=None, message=None):
-        """Create new responce."""
+        """Create new response."""
         super().__init__(request_type, data)
         self._success = success
         self._message = message

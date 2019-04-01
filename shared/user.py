@@ -34,7 +34,7 @@ class User:
 
         Contains new lines.
         """
-        return "Name: {}\nCredits: {}\nItems:{}\n".format(
-            self.name, self.credits,
-            ["{}: {}\n".format(name, quantity) \
-                for item, quantity in self.items.items()])
+        ret = f"Name: {self.name}\nCredits: {self.credits}\nItems:"
+        for item, quantity in self.items.items():
+            ret.append(f"\n{item}: {quantity}")
+        return ret

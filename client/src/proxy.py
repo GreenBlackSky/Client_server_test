@@ -1,10 +1,12 @@
-
-from request import Request, Responce
 """Moduel contains Proxy class."""
+
+from request import Request, Response
 
 
 class Proxy:
-    """Proxy is created to decrease number of network communication
+    """Cache proxy.
+
+    Proxy is created to decrease number of network communication
     between server and client.
     It wraps ServerHandler instance.
     Proxy has cache, which is updated when necessary.
@@ -32,21 +34,21 @@ class Proxy:
         }
 
     def reconnect(self):
-        """Wrapper for ServerHandler.reconnect."""
+        """Wrapps ServerHandler.reconnect."""
         self._server.reconnect()
         self._get_game_info()
 
     def execute(self, request_type, arg=None):
-        """Wrapper for ServerHandler.execute.
+        """Wrapps ServerHandler.execute.
 
-        Update cache and use it to provide responces when possible.
+        Update cache and use it to provide responses when possible.
         """
         if request_type in self._updaters:
             ret = self._server.execute(request_type, arg)
             if ret.success:
                 self._updaters[request_type](arg)
         elif self._cache.get(request_type, None):
-            ret = Responce(request_type, data=self._cache[request_type])
+            ret = Response(request_type, data=self._cache[request_type])
         else:
             ret = self._server.execute(request_type, arg)
         return ret
@@ -75,7 +77,8 @@ class Proxy:
         item = self._server.execute(Request.Type.GET_ITEM, item_name).data
         self._cache[Request.Type.GET_CREDITS] -= item.buying_price
         self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] = \
-            self._cache[Request.Type.GET_USER_ITEMS_NAMES].get(item_name, 0) + 1
+            self._cache[Request.Type.GET_USER_ITEMS_NAMES].get(item_name, 0) \
+            + 1
 
     def _handle_sale(self, item_name):
         item = self._server.execute(Request.Type.GET_ITEM, item_name).data

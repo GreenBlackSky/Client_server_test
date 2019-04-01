@@ -3,9 +3,10 @@
 from socketserver import TCPServer, ThreadingMixIn, BaseRequestHandler
 from pickle import dumps, loads
 
+
 class ClientHandler(ThreadingMixIn, TCPServer):
     """ClientHandler handles connection with clients on server side.
-    
+
     TCP-based.
     """
 
@@ -23,9 +24,9 @@ class ClientHandler(ThreadingMixIn, TCPServer):
                 if not request:
                     break
                 request = loads(request)
-                responce = self._server.process_request(request)
-                responce = dumps(responce)
-                self.request.send(responce)
+                response = self._server.process_request(request)
+                response = dumps(response)
+                self.request.send(response)
             print("Connection lost:", self.client_address)
             self.request.close()
 
@@ -34,7 +35,7 @@ class ClientHandler(ThreadingMixIn, TCPServer):
 
     def __init__(self, port, server_core):
         """Initialize server, listening to given port.
-        
+
         Takes port and ServerCore instance as arguments.
         """
         super().__init__(("127.0.0.1", port), ClientHandler._Handler)

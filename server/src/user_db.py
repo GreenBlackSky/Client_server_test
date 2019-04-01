@@ -13,7 +13,7 @@ class UsersDB:
 
     def __init__(self, path):
         """Open connection with data base with users.
-        
+
         Behaves like dict for the most part.
         Create new user if no user under given name is exists.
         """
@@ -26,7 +26,7 @@ class UsersDB:
                 user.credits = user_conf["credits"]
                 for item in user_conf["items"]:
                     user.items[item] = user_conf["items"][item]
-                self._users[user.name] = user  
+                self._users[user.name] = user
 
     def __contains__(self, user_name):
         """Check if db contains user with given name."""
@@ -34,7 +34,7 @@ class UsersDB:
 
     def __getitem__(self, user_name):
         """Get user with given name.
-        
+
         If no user under such name exists, create one.
         """
         if user_name not in self._users:

@@ -7,6 +7,7 @@ from json import load
 from addshare import get_abs_path
 from item import Item
 
+
 def decode_item(data):
     """Decode Item from JSON file."""
     if "name" in data and \
@@ -16,9 +17,10 @@ def decode_item(data):
                     data["buy"],
                     data["sell"])
 
+
 class ItemsDB:
     """Class handles JSON-based data base with items.
-    
+
     Behaves like dict for the most part.
     """
 
