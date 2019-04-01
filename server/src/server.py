@@ -6,6 +6,7 @@ from item_sqlite_db import ItemsDB
 from user_sqlite_db import UsersDB
 from servercore import ServerCore
 from clienthandler import ClientHandler
+from signal import signal, SIGINT
 
 
 def run():
@@ -46,7 +47,9 @@ def run():
                              config["max_init_credits"],
                              config["save_frequency"],
                              config["simultanious_log_ins"])
-    ClientHandler(config["port"], server_core).exec()
+
+    ClientHandler(config["port"], server_core).serve_forever()
+
 
 if __name__ == "__main__":
     run()

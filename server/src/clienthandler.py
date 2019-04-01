@@ -40,7 +40,3 @@ class ClientHandler(ThreadingMixIn, TCPServer):
         """
         super().__init__(("127.0.0.1", port), ClientHandler._Handler)
         ClientHandler._Handler.server_core = server_core
-
-    def exec(self):
-        """Start an execution loop."""
-        self.serve_forever()

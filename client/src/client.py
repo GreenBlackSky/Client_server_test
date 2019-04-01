@@ -6,6 +6,14 @@ from clientcore import ClientCore
 from serverhandler import ServerHandler
 from proxy import Proxy
 from confighandler import open_config, transform_config
+from signal import signal, SIGINT
+
+
+def signal_handler(sig, frame):
+    """Handle signal and exit."""
+    raise SystemExit
+
+signal(SIGINT, signal_handler)
 
 
 def run():
