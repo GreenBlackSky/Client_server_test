@@ -4,7 +4,6 @@ It is used to read json-based data bases with Items.
 """
 
 from json import load
-from addshare import get_abs_path
 from item import Item
 
 
@@ -27,7 +26,7 @@ class ItemsDB:
     def __init__(self, path):
         """Open connection to data base with items."""
         self._items = dict()
-        with open(get_abs_path() + path, "r") as stream:
+        with open(path, "r") as stream:
             items = load(stream, object_hook=decode_item)
             self._items = {item.name: item for item in items}
 

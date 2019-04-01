@@ -4,7 +4,6 @@ It is used to read json-based data bases with User.
 """
 
 from json import load, dump
-from addshare import get_abs_path
 from user import User
 
 
@@ -19,7 +18,7 @@ class UsersDB:
         """
         self._users = dict()
         self._path = path
-        with open(get_abs_path() + path, "r") as stream:
+        with open(path, "r") as stream:
             users = load(stream)
             for user_conf in users:
                 user = User(user_conf["name"])
@@ -61,7 +60,7 @@ class UsersDB:
             }
             db.append(user_data)
 
-        with open(get_abs_path() + self._path, "w") as stream:
+        with open(self._path, "w") as stream:
             dump(db, stream)
 
 # TODO OOP-style load and commit

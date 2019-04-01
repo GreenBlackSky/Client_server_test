@@ -36,8 +36,8 @@ Server config must contain following fields:
 * `port` - port to listen to
 * `max_init_credits` - lower bound for log in credits
 * `min_init_credits` - upper bound for log in credits
-* `items_db_path` - relative path to data base with items from project root
-* `users_db_path` - relative path to data base with users from project root
+* `items_db_path` - path to data base with items
+* `users_db_path` - path to data base with users
 * `save_frequency` - frequency of commits to users data base. (In turms of successfull operations.)
 * `simultanious_log_ins` - flag, which allows different clients simultaniously log in into one user. To forbid such behaviour, one must set it to empty string.
 

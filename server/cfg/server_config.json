@@ -4,6 +4,6 @@
     "min_init_credits": 1,
     "save_frequency": 10,
     "simultanious_log_ins": "",
-    "items_db_path": "/server/data/items.json",
-    "users_db_path": "/server/data/users.json"
+    "items_db_path": "server/data/items.json",
+    "users_db_path": "server/data/users.json"
 }
