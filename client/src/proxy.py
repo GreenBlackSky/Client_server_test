@@ -88,3 +88,5 @@ class Proxy:
         self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] -= 1
         if self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] == 0:
             self._cache[Request.Type.GET_USER_ITEMS_NAMES].pop(item_name)
+
+# TODO handle every request type

@@ -16,26 +16,27 @@ class Request:
         GET_ALL_USERS_NAMES = 3
 
         # items
-        GET_ITEM = 4
-        GET_ALL_ITEMS = 5
-        GET_ALL_ITEMS_NAMES = 6
+        ITEM_EXISTS = 4
+        GET_ITEM = 5
+        GET_ALL_ITEMS = 6
+        GET_ALL_ITEMS_NAMES = 7
 
         # current user
-        GET_CURRENT_USER = 7
-        GET_CURRENT_USER_NAME = 8
-        GET_CREDITS = 9
+        GET_CURRENT_USER = 8
+        GET_CURRENT_USER_NAME = 9
+        GET_CREDITS = 10
 
         # current user items
-        USER_HAS = 10
-        GET_USER_ITEMS = 11
-        GET_USER_ITEMS_NAMES = 12
+        USER_HAS = 11
+        GET_USER_ITEMS = 12
+        GET_USER_ITEMS_NAMES = 13
 
         # util
-        PING = 13
-        LOG_IN = 14
-        PURCHASE_ITEM = 15
-        SELL_ITEM = 16
-        LOG_OUT = 17
+        PING = 14
+        LOG_IN = 15
+        PURCHASE_ITEM = 16
+        SELL_ITEM = 17
+        LOG_OUT = 18
 
     def __init__(self, request_type, data=None):
         """Create new request."""

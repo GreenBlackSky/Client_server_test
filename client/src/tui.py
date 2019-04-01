@@ -39,12 +39,6 @@ class TUI:
         Request.Type.LOG_OUT: "log out"
     }
 
-    _need_confirmation = {
-        Request.Type.PURCHASE_ITEM: "Are you sure you want to buy this item?",
-        Request.Type.SELL_ITEM: "Are you sure you want to sell this item?",
-        Request.Type.LOG_OUT: "Are you sure you want to log out?",
-    }
-
 # Util
 
     def __init__(self):
@@ -203,11 +197,60 @@ class TUI:
                 continue
 
             command = self._commands[user_input]
-            if command not in self._need_confirmation or self._confirm_action(
-                self._need_confirmation[command]
+            self._last_item = new_item
+
+            if command is Request.Type.LOG_OUT and self._confirm_action(
+                "Are you sure you want to log out?"
+            ) or (
+                command is Request.Type.PURCHASE_ITEM and self._buy_item()
+            ) or (
+                command is Request.Type.SELL_ITEM and self._sell_item()
             ):
-                self._last_item = new_item
-                return self._commands[user_input]
+                return command
+
+    def _buy_item(self):
+        if not self._server.execute(
+            Request.Type.ITEM_EXISTS,
+            self._last_item
+        ).data:
+            print(f"No such item: {self._last_item}")
+            return False
+
+        user_credits = self._server.execute(Request.Type.GET_CREDITS).data
+        price = self._server.execute(
+            Request.Type.GET_ITEM,
+            self._last_item
+        ).data.buying_price
+        if price > user_credits:
+            print("Not enough money")
+            return False
+
+        return self._confirm_action(
+            f"Buy {self._last_item} for {price} credits?"
+        )
+
+    def _sell_item(self):
+        if not self._server.execute(
+            Request.Type.ITEM_EXISTS,
+            self._last_item
+        ).data:
+            print(f"No such item: {self._last_item}")
+            return False
+
+        if not self._server.execute(
+            Request.Type.USER_HAS,
+            self._last_item
+        ).data:
+            print(f"You don't have {self._last_item}")
+            return False
+
+        price = self._server.execute(
+            Request.Type.GET_ITEM,
+            self._last_item
+        ).data.selling_price
+        return self._confirm_action(
+            f"Sell {self._last_item} for {price} credits?"
+        )
 
 # Output methods
 

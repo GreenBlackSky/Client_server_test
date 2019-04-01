@@ -106,16 +106,21 @@ class ServerCore:
         }
 
         self._complex_requests = {
+            Request.Type.GET_USER: self._get_user,
+            Request.Type.GET_ITEM: self._get_item,
+            Request.Type.USER_HAS: self._user_has,
+            Request.Type.PURCHASE_ITEM: self._buy_item,
+            Request.Type.SELL_ITEM: self._sell_item,
             Request.Type.USER_EXISTS: lambda _, name:
                 Response(
                     Request.Type.USER_EXISTS,
                     data=(name in self._users)
                 ),
-            Request.Type.GET_USER: self._get_user,
-            Request.Type.GET_ITEM: self._get_item,
-            Request.Type.USER_HAS: self._user_has,
-            Request.Type.PURCHASE_ITEM: self._buy_item,
-            Request.Type.SELL_ITEM: self._sell_item
+            Request.Type.ITEM_EXISTS: lambda _, name:
+                Response(
+                    Request.Type.ITEM_EXISTS,
+                    data=(name in self._items)
+                ),
         }
 
     @staticmethod
