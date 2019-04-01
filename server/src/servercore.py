@@ -33,6 +33,8 @@ class ServerCore:
                 return Response(Request.Type.LOG_IN,
                                 success=False,
                                 message="User already online")
+            if user_name not in self._parent.users:
+                self._parent.users.create_user(user_name)
             self._user = self._parent.users[user_name]
             self._user.credits += self._parent.get_init_credits()
             self._parent.activate_user(user_name)
@@ -186,7 +188,8 @@ class ServerCore:
             return self._no_user_response(Request.Type.USER_HAS)
 
         if not item_name:
-            return Response(Request.Type.USER_HAS, success=False,
+            return Response(Request.Type.USER_HAS,
+                            success=False,
                             message="No item")
 
         if item_name not in self._items:

@@ -199,8 +199,7 @@ class TUI:
             command = self._commands[user_input]
             if command not in self._need_confirmation or \
                     self._confirm_action(self._need_confirmation[command]):
-                if new_item:
-                    self._last_item = new_item
+                self._last_item = new_item
                 return self._commands[user_input]
 
 # Output methods

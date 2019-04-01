@@ -32,13 +32,14 @@ class UsersDB:
         """Check if db contains user with given name."""
         return (user_name in self._users)
 
-    def __getitem__(self, user_name):
-        """Get user with given name.
+    def create_user(self, user_name):
+        """Create new user."""
+        self._users[user_name] = User(user_name)
 
-        If no user under such name exists, create one.
-        """
+    def __getitem__(self, user_name):
+        """Get user with given name."""
         if user_name not in self._users:
-            self._users[user_name] = User(user_name)
+            raise KeyError
         return self._users[user_name]
 
     def keys(self):
