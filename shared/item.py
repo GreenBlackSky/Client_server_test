@@ -42,7 +42,7 @@ class Item:
 
         Contains new lines.
         """
-        return "{}:\n\tbuy: {}\n\tsell: {}".format(
+        return "{}:\n\tbuy: {}\n\tsell: {}\n".format(
             self.name,
             self.buying_price,
             self.selling_price

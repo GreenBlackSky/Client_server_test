@@ -34,7 +34,7 @@ class User:
 
         Contains new lines.
         """
-        ret = f"Name: {self.name}\nCredits: {self.credits}\nItems:"
+        ret = f"Name: {self.name}\nCredits: {self.credits}\nItems:\n"
         for item, quantity in self.items.items():
-            ret.append(f"\n{item}: {quantity}")
+            ret.append(f"{item}: {quantity}\n")
         return ret

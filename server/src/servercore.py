@@ -180,21 +180,19 @@ class ServerCore:
     def handle_request_from(self, user, request):
         """Handle request for given user."""
         request_type = request.request_type
+
         if request_type in self._plain_requests:
             ret = Response(
                 request_type,
                 data=self._plain_requests[request_type]()
             )
-
         elif request_type in self._user_requests and not user:
             ret = self._no_user_response(request_type)
-
         elif request_type in self._user_requests:
             ret = Response(
                 request_type,
                 data=self._user_requests[request_type](user)
             )
-
         else:
             ret = self._complex_requests[request_type](user, request.data)
 

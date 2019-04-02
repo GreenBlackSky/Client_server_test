@@ -57,3 +57,5 @@ class ItemsDB:
             raise KeyError
         name, buy, sell = tuples[0]
         return Item(name, buy, sell)
+
+# TODO check about multythread access

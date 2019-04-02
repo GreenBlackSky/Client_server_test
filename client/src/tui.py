@@ -199,14 +199,16 @@ class TUI:
             command = self._commands[user_input]
             self._last_item = new_item
 
-            if command is Request.Type.LOG_OUT and self._confirm_action(
+            if command is Request.Type.LOG_OUT and not self._confirm_action(
                 "Are you sure you want to log out?"
             ) or (
-                command is Request.Type.PURCHASE_ITEM and self._buy_item()
+                command is Request.Type.PURCHASE_ITEM and not self._buy_item()
             ) or (
-                command is Request.Type.SELL_ITEM and self._sell_item()
+                command is Request.Type.SELL_ITEM and not self._sell_item()
             ):
-                return command
+                continue
+
+            return command
 
     def _buy_item(self):
         if not self._server.execute(
@@ -303,5 +305,4 @@ class TUI:
             for key, val in response.data.items():
                 print(key, ": ", val)
 
-# TODO manipulate users from admin account
 # TODO get items quantity for deal

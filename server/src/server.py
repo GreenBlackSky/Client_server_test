@@ -42,12 +42,15 @@ def run():
         print("Unable to read users data base")
         return
 
-    server_core = ServerCore(items_db, users_db,
-                             config["min_init_credits"],
-                             config["max_init_credits"],
-                             config["save_frequency"],
-                             config["simultanious_log_ins"])
-
+    server_core = ServerCore(
+        items_db,
+        users_db,
+        config["min_init_credits"],
+        config["max_init_credits"],
+        config["save_frequency"],
+        config["simultanious_log_ins"]
+    )
+    print("Online")
     ClientHandler(config["port"], server_core).serve_forever()
 
 
