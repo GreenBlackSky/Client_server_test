@@ -108,16 +108,18 @@ class Proxy:
         ]:
             self._cache[request_type] = None
 
-    def _handle_purchase(self, item_name):
+    def _handle_purchase(self, item_name_and_amount):
+        item_name, amount = item_name_and_amount
         item = self._server.execute(Request.Type.GET_ITEM, item_name).data
-        self._cache[Request.Type.GET_CREDITS] -= item.buying_price
+        self._cache[Request.Type.GET_CREDITS] -= item.buying_price*amount
         self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] = \
             self._cache[Request.Type.GET_USER_ITEMS_NAMES].get(item_name, 0) \
-            + 1
+            + amount
 
-    def _handle_sale(self, item_name):
+    def _handle_sale(self, item_name_and_amount):
+        item_name, amount = item_name_and_amount
         item = self._server.execute(Request.Type.GET_ITEM, item_name).data
-        self._cache[Request.Type.GET_CREDITS] += item.selling_price
-        self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] -= 1
+        self._cache[Request.Type.GET_CREDITS] += item.selling_price*amount
+        self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] -= amount
         if self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] == 0:
             self._cache[Request.Type.GET_USER_ITEMS_NAMES].pop(item_name)

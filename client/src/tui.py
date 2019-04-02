@@ -34,8 +34,9 @@ class TUI:
         Request.Type.GET_ITEM: "show price of item, usage: price <item_name>",
         Request.Type.USER_HAS:
             "check how much of given item user has, usage: find <item_name>",
-        Request.Type.PURCHASE_ITEM: "buy item, usage: buy <item_name>",
-        Request.Type.SELL_ITEM: "sell item, usage: sell <item_name>",
+        Request.Type.PURCHASE_ITEM:
+            "buy item, usage: buy <item_name> [amount]",
+        Request.Type.SELL_ITEM: "sell item, usage: sell <item_name> [amount]",
         Request.Type.LOG_OUT: "log out"
     }
 
@@ -211,48 +212,82 @@ class TUI:
             return command
 
     def _buy_item(self):
-        if not self._server.execute(
-            Request.Type.ITEM_EXISTS,
-            self._last_item
-        ).data:
-            print(f"No such item: {self._last_item}")
+        """Check if user can and wish to buy last item."""
+        try:
+            item_name, amount = self._parse_item_name()
+        except Exception as e:
+            print(e)
             return False
 
         user_credits = self._server.execute(Request.Type.GET_CREDITS).data
         price = self._server.execute(
             Request.Type.GET_ITEM,
-            self._last_item
+            item_name
         ).data.buying_price
-        if price > user_credits:
+        if price*amount > user_credits:
             print("Not enough money")
             return False
 
         return self._confirm_action(
-            f"Buy {self._last_item} for {price} credits?"
+            f"Buy {amount} of {item_name} for {price*amount} credits?"
         )
 
     def _sell_item(self):
-        if not self._server.execute(
-            Request.Type.ITEM_EXISTS,
-            self._last_item
-        ).data:
-            print(f"No such item: {self._last_item}")
+        """Check if user can and wish to sell last item."""
+        try:
+            item_name, amount = self._parse_item_name()
+        except Exception as e:
+            print(e)
             return False
 
-        if not self._server.execute(
+        user_has = self._server.execute(
             Request.Type.USER_HAS,
-            self._last_item
-        ).data:
-            print(f"You don't have {self._last_item}")
+            item_name
+        ).data
+        if user_has < amount:
+            print(f"You don't have {amount} {item_name}")
             return False
 
         price = self._server.execute(
             Request.Type.GET_ITEM,
-            self._last_item
+            item_name
         ).data.selling_price
         return self._confirm_action(
-            f"Sell {self._last_item} for {price} credits?"
+            f"Sell {amount} of {item_name} for {price*amount} credits?"
         )
+
+    def _parse_item_name(self):
+        """Parse item name and amount from last_item.
+
+        Check a lot of stuff and can raise an exeption.
+        """
+        if not self._last_item:
+            raise Exception("No item")
+
+        if self._server.execute(
+            Request.Type.ITEM_EXISTS,
+            self._last_item
+        ).data:
+            self._last_item = (self.last_item, 1)
+            return self.last_item
+
+        if ' ' not in self.last_item:
+            raise Exception(f"No such item: {self._last_item}")
+
+        amount, item_name = self._last_item[::-1].split(' ', 1)
+        item_name = item_name[::-1]
+        amount = (amount[::-1])
+        if not amount.isdigit():
+            raise Exception(f"Can't buy or sell {amount} items")
+
+        if not self._server.execute(
+            Request.Type.ITEM_EXISTS,
+            item_name
+        ).data:
+            raise Exception(f"No such item: {item_name}")
+
+        self._last_item = (item_name, int(amount))
+        return self.last_item
 
 # Output methods
 
@@ -304,5 +339,3 @@ class TUI:
         else:
             for key, val in response.data.items():
                 print(key, ": ", val)
-
-# TODO get items quantity for deal

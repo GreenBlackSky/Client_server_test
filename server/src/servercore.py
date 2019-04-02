@@ -245,7 +245,8 @@ class ServerCore:
             data=self._users[user_name]
         )
 
-    def _buy_item(self, user, item_name):
+    def _buy_item(self, user, item_name_and_amount):
+        item_name, amount = item_name_and_amount
         request_type = Request.Type.PURCHASE_ITEM
         if not user:
             return self._no_user_response(request_type)
@@ -254,21 +255,22 @@ class ServerCore:
             return self._no_item_response(request_type, item_name)
 
         item = self._items[item_name]
-        if item.buying_price > user.credits:
+        if item.buying_price*amount > user.credits:
             return Response(
                 request_type,
                 success=False,
                 message="Not enough money"
             )
 
-        user.credits -= item.buying_price
-        user.items[item_name] = user.items.get(item_name, 0) + 1
+        user.credits -= item.buying_price*amount
+        user.items[item_name] = user.items.get(item_name, 0) + amount
         self._operation_count += 1
         return Response(
             request_type,
-            message=f"Item bought: {item_name}")
+            message=f"Item(s) bought: {amount} {item_name}")
 
-    def _sell_item(self, user, item_name):
+    def _sell_item(self, user, item_name_and_amount):
+        item_name, amount = item_name_and_amount
         request_type = Request.Type.SELL_ITEM
         if not user:
             return self._no_user_response(request_type)
@@ -277,18 +279,19 @@ class ServerCore:
             return self._no_item_response(request_type, item_name)
 
         item = self._items[item_name]
-        if item_name not in user.items:
+        if user.items.get(item_name, 0) < amount:
             return Response(
                 request_type,
                 success=False,
-                message=f"You don't have {item_name}"
+                message=f"You don't have {amount} {item_name}"
             )
 
-        user.items[item_name] -= 1
+        user.items[item_name] -= amount
         if user.items[item_name] == 0:
             user.items.pop(item_name)
-        user.credits += item.selling_price
+        user.credits += item.selling_price*amount
         self._operation_count += 1
-        return Response(request_type, message=f"Item sold: {item_name}")
-
-# TODO buy number of items
+        return Response(
+            request_type,
+            message=f"Item(s) sold: {amount} {item_name}"
+        )
