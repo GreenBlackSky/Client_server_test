@@ -136,7 +136,7 @@ class ServerCore:
         return Response(
             request_type,
             success=False,
-            message=f"Not such item: {item_name}"
+            message=f"No such item: {item_name}"
         )
 
     @property

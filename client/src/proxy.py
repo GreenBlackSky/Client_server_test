@@ -22,6 +22,7 @@ class Proxy:
         self._cache = {
             Request.Type.GET_ALL_USERS_NAMES: None,
             Request.Type.GET_ALL_ITEMS: None,
+            Request.Type.GET_ALL_ITEMS_NAMES: None,
             Request.Type.GET_CURRENT_USER_NAME: None,
             Request.Type.GET_CREDITS: None,
             Request.Type.GET_USER_ITEMS_NAMES: None
@@ -31,6 +32,10 @@ class Proxy:
             Request.Type.LOG_OUT: self._clear_user_info,
             Request.Type.PURCHASE_ITEM: self._handle_purchase,
             Request.Type.SELL_ITEM: self._handle_sale
+        }
+        self._checkers = {
+            Request.Type.ITEM_EXISTS: self._item_exists,
+            Request.Type.GET_ITEM: self._get_item,
         }
 
     def reconnect(self):
@@ -49,8 +54,34 @@ class Proxy:
                 self._updaters[request_type](arg)
         elif self._cache.get(request_type, None):
             ret = Response(request_type, data=self._cache[request_type])
+        elif request_type in self._checkers:
+            ret = self._checkers[request_type](arg)
         else:
             ret = self._server.execute(request_type, arg)
+        return ret
+
+    def _item_exists(self, item_name):
+        return Response(
+            Request.Type.ITEM_EXISTS,
+            data=(item_name in self._cache[Request.Type.GET_ALL_ITEMS_NAMES])
+        )
+
+    def _get_item(self, item_name):
+        if item_name not in self._cache[Request.Type.GET_ALL_ITEMS_NAMES]:
+            ret = Response(
+                Request.Type.GET_ITEM,
+                success=False,
+                message=f"No such item: {item_name}"
+            )
+        else:
+            item = next(filter(
+                lambda item: item.name == item_name,
+                self._cache[Request.Type.GET_ALL_ITEMS]
+                ))
+            ret = Response(
+                Request.Type.GET_ITEM,
+                data=item
+            )
         return ret
 
     def _get_game_info(self, *_):
@@ -58,6 +89,8 @@ class Proxy:
             self._server.execute(Request.Type.GET_ALL_USERS_NAMES).data
         self._cache[Request.Type.GET_ALL_ITEMS] = \
             self._server.execute(Request.Type.GET_ALL_ITEMS).data
+        self._cache[Request.Type.GET_ALL_ITEMS_NAMES] = \
+            self._server.execute(Request.Type.GET_ALL_ITEMS_NAMES).data
 
     def _get_user_info(self, *_):
         user = self._server.execute(Request.Type.GET_CURRENT_USER).data
@@ -88,5 +121,3 @@ class Proxy:
         self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] -= 1
         if self._cache[Request.Type.GET_USER_ITEMS_NAMES][item_name] == 0:
             self._cache[Request.Type.GET_USER_ITEMS_NAMES].pop(item_name)
-
-# TODO handle every request type

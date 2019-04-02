@@ -68,7 +68,7 @@ class TUI:
     def _get_input(self, prompt):
         while True:
             user_input = input(prompt + "\n")
-            if user_input == 'quit':
+            if user_input == 'quit' or user_input == 'q':
                 self._confirm_exit()
             elif user_input.startswith('help'):
                 self._help(user_input.replace("help", "", 1).strip())
@@ -111,7 +111,7 @@ class TUI:
             elif command == "help":
                 print("help\tprint tips or command help. \
                        Usage: help <command>")
-            elif command == "quit" or user_input == 'q':
+            elif command == "quit" or command == 'q':
                 print(command + ": Exit game")
             else:
                 print(command + ": unknown command")
